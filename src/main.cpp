@@ -1,8 +1,8 @@
-#include "game/Game.h"
+#include "application/Application.h"
 
 int main()
 {
-  Game::Instance().Run();
+  Application::Instance().Run();
 
   return 0;
 }

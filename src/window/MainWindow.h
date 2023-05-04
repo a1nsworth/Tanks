@@ -6,7 +6,7 @@
 #define COURSE_WORK_SRC_GAME_MAINWINDOW_H
 
 #include "Window.h"
-#include "../game/GameConstants.h"
+#include "../application/ApplicationConstants.h"
 
 class MainWindow : public Window
 {

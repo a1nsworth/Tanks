@@ -13,6 +13,12 @@ class Object
   sf::Image image_;
   sf::Texture texture_;
   sf::Sprite sprite_;
+
+ public:
+  const sf::Image &GetImage() const;
+  const sf::Texture &GetTexture() const;
+  const sf::Sprite &GetSprite() const;
+  sf::Sprite &GetLinkSprite();
 };
 
 #endif //TANKS_SRC_ENTITIES_OBJECT_H_
