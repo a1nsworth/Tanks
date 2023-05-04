@@ -3,21 +3,17 @@
 //
 
 #include "BackGround.h"
-BackGround::BackGround() : grounds_(std::vector(HEIGHT_MAIN_WINDOW / WIDTH_GROUND,
-												std::vector<Ground>(WIDTH_MAIN_WINDOW / WIDTH_GROUND, Ground())))
+BackGround::BackGround()
 {
-  image_.loadFromFile(PATH_TILES);
-  texture_.loadFromImage(image_);
-  sprite_.setTexture(texture_);
+  ground_ = new Ground();
+  sprite_ = new sf::Sprite(ground_->GetSprite());
 }
-void BackGround::Render(sf::RenderWindow *render_window)
+void BackGround::Render(sf::RenderWindow *const render_window)
 {
-  for (auto i = 0; i < grounds_.size(); ++i)
-	for (auto j = 0; j < grounds_[0].size(); ++j)
+  for (auto i = 0; i < HEIGHT_MAIN_WINDOW / HEIGHT_GROUND; ++i)
+	for (auto j = 0; j < WIDTH_MAIN_WINDOW / WIDTH_GROUND; ++j)
 	{
-	  sprite_.setTextureRect(sf::IntRect(290, 105, WIDTH_GROUND, WIDTH_GROUND));
-	  sprite_.setPosition(j * WIDTH_GROUND, i * WIDTH_GROUND);
-
-	  render_window->draw(sprite_);
+	  sprite_->setPosition(j * WIDTH_GROUND, i * HEIGHT_GROUND);
+	  render_window->draw(*sprite_);
 	}
 }
