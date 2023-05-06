@@ -7,8 +7,8 @@
 
 class IUpdatable
 {
-public:
-	virtual void Update() = 0;
+ public:
+  virtual void Update(float delta_time) = 0;
 };
 
 #endif //_IUPDATABLE_H_

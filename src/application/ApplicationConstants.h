@@ -5,6 +5,9 @@
 #ifndef TANKS_SRC_GAME_APPLICATIONCONSTANTS_H_
 #define TANKS_SRC_GAME_APPLICATIONCONSTANTS_H_
 
+// TODO НАСЛЕДОВАНИЕ ОТ Drawable, Transformable
+// TODO Цвета пуль
+
 #define PATH_TILES "../../resources/Tiles.png"
 #define WIDTH_MAIN_WINDOW 1738
 #define HEIGHT_MAIN_WINDOW 948

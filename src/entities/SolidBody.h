@@ -12,7 +12,7 @@ class SolidBody : public Object, public ICollided
 {
  public:
   bool IsCollide(const SolidBody *collided_object) override;
-  void ActionOnCollision(const SolidBody *collided_object) override;
+  bool IsCollide(const sf::FloatRect &collided_object) override;
 };
 
 #endif //TANKS_SRC_ENTITIES_SOLIDBODY_H_

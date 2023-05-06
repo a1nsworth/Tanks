@@ -16,12 +16,14 @@ class KeyAssignments
   Command *move_down_;
   Command *spin_clockwise_;
   Command *spin_anti_clockwise_;
+  Command *shot_;
 
  public:
   KeyAssignments(sf::Keyboard::Key move_up,
 				 sf::Keyboard::Key move_down,
 				 sf::Keyboard::Key spin_clockwise,
-				 sf::Keyboard::Key spin_anti_clockwise);
+				 sf::Keyboard::Key spin_anti_clockwise,
+				 sf::Keyboard::Key shot);
   ~KeyAssignments() = default;
 
   Command *GetMoveDown() const;
@@ -35,6 +37,9 @@ class KeyAssignments
 
   Command *GetSpinAntiClockwise() const;
   void SetSpinAntiClockwise(Command *spin_anti_clockwise);
+
+  Command *GetShot() const;
+  void SetShot(Command *shot);
 
   Command *GetCommandByKey(sf::Keyboard::Key key);
 };

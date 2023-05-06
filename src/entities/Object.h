@@ -15,6 +15,8 @@ class Object
   sf::Sprite sprite_;
 
  public:
+  virtual ~Object() = default;
+
   const sf::Image &GetImage() const;
   const sf::Texture &GetTexture() const;
   const sf::Sprite &GetSprite() const;

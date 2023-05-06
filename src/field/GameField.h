@@ -9,6 +9,7 @@
 
 #include "BackGround.h"
 #include "BackObstacles.h"
+#include "GameObstacles.h"
 
 class GameField : public IRendered
 {

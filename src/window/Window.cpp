@@ -7,7 +7,7 @@ Window::Window(const sf::VideoMode &video_mode, const sf::String &title)
 {
   render_window_ = new sf::RenderWindow(video_mode, title);
 }
-sf::RenderWindow *Window::GetRenderWindow() const
+sf::RenderWindow *Window::GetRenderWindow()
 {
   return render_window_;
 }

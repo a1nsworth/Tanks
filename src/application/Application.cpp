@@ -17,7 +17,7 @@ void Application::Render(sf::RenderWindow *const render_window)
   RenderTanks(render_window);
   render_window->display();
 }
-void Application::Update()
+void Application::Update(const float delta_time)
 {
   UpdateEvents();
   UpdateTanks();
@@ -37,13 +37,19 @@ void Application::UpdateEvents()
 	}
   }
 
-  MoveController::Processing(tank_1_, delta_time_);
-  MoveController::Processing(tank_2_, delta_time_);
+#pragma region Обработка нажатий клавиш
+  if (tank_1_ != nullptr)
+	MoveController::Processing(tank_1_, delta_time_);
+  if (tank_2_ != nullptr)
+	MoveController::Processing(tank_2_, delta_time_);
+#pragma endregion
 }
 void Application::RenderTanks(sf::RenderWindow *render_window)
 {
-  tank_1_->Render(render_window);
-  tank_2_->Render(render_window);
+  if (tank_1_ != nullptr)
+	tank_1_->Render(render_window);
+  if (tank_2_ != nullptr)
+	tank_2_->Render(render_window);
 }
 void Application::InitTanks()
 {
@@ -51,15 +57,17 @@ void Application::InitTanks()
 					 KeyAssignments(sf::Keyboard::Key::W,
 									sf::Keyboard::Key::S,
 									sf::Keyboard::Key::A,
-									sf::Keyboard::Key::D));
+									sf::Keyboard::Key::D,
+									sf::Keyboard::Key::C));
   tank_2_ = new Tank(sf::Color::Yellow,
 					 KeyAssignments(sf::Keyboard::Key::Up,
 									sf::Keyboard::Key::Down,
 									sf::Keyboard::Key::Left,
-									sf::Keyboard::Key::Right));
+									sf::Keyboard::Key::Right,
+									sf::Keyboard::Key::M));
 
-  tank_1_->GetLinkSprite().setPosition(WIDTH_MAIN_WINDOW / 2, HEIGHT_MAIN_WINDOW / 2);
-  tank_2_->GetLinkSprite().setPosition(WIDTH_MAIN_WINDOW / 4, HEIGHT_MAIN_WINDOW / 4);
+  tank_1_->GetLinkSprite().setPosition(WIDTH_MAIN_WINDOW / 2., HEIGHT_MAIN_WINDOW / 2.);
+  tank_2_->GetLinkSprite().setPosition(WIDTH_MAIN_WINDOW / 4., HEIGHT_MAIN_WINDOW / 4.);
 }
 void Application::InitGameField()
 {
@@ -79,29 +87,74 @@ void Application::Run()
   while (main_window_->GetRenderWindow()->isOpen())
   {
 	UpdateDeltaTime();
-	Update();
+	Update(delta_time_);
 	Render(main_window_->GetRenderWindow());
   }
 }
 void Application::UpdateTanks()
 {
-  tank_1_->Update();
-  tank_2_->Update();
-  for (const auto &kRow : game_field_->GetBackObstacles()->GetObstacles())
+  if (tank_1_ != nullptr && tank_1_->IsAlive())
   {
-	for (const auto &kObstacle : kRow)
+	std::cout << tank_1_->GetSprite().getGlobalBounds().left << "|" << tank_1_->GetSprite().getGlobalBounds().top
+			  << '\n';
+	tank_1_->Update(delta_time_);
+
+	// Коллизия с краями карты
+	tank_1_->ActionOnCollision(game_field_->GetBackObstacles()->GetFloatRect());
+	if (tank_2_ != nullptr)
 	{
-	  if (kObstacle != nullptr)
+	  if (const auto kObstacle = game_field_->GetBackObstacles()->GetIndexCollide(tank_2_); kObstacle != nullptr)
 	  {
-		if (tank_1_->IsCollide(kObstacle)) { tank_1_->ActionOnCollision(kObstacle); }
-		if (tank_2_->IsCollide(kObstacle)) { tank_2_->ActionOnCollision(kObstacle); }
+		tank_2_->ActionOnCollision(kObstacle);
+	  }
+
+	  if (const auto kBullet = tank_1_->GetBullet(); kBullet != nullptr && kBullet->IsLaunched())
+	  {
+		if (tank_2_ != nullptr && kBullet->IsCollide(tank_2_))
+		{
+		  kBullet->ActionOnCollision(tank_1_);
+		  tank_1_->DeleteBullet();
+		}
+		if (game_field_->GetBackObstacles()->IsCollide(kBullet))
+		{
+		  tank_1_->DeleteBullet();
+		}
 	  }
 	}
+  } else if (tank_1_ != nullptr)
+  {
+	delete tank_1_;
+	tank_1_ = nullptr;
   }
+  if (tank_2_ != nullptr && tank_2_->IsAlive())
+  {
+	tank_2_->Update(delta_time_);
 
-  std::cout << "left: " << tank_1_->GetSprite().getGlobalBounds().left << " | "
-			<< "top: " << tank_1_->GetSprite().getGlobalBounds().top << " | " <<
-			"width: " << tank_1_->GetSprite().getGlobalBounds().width << " | " <<
-			"height: " << tank_1_->GetSprite().getGlobalBounds().height << " | " << '\n';
+	// Коллизия с краями карты
+	tank_2_->ActionOnCollision(game_field_->GetBackObstacles()->GetFloatRect());
+	if (tank_2_ != nullptr)
+	{
+	  if (const auto kObstacle = game_field_->GetBackObstacles()->GetIndexCollide(tank_2_); kObstacle != nullptr)
+	  {
+		tank_2_->ActionOnCollision(kObstacle);
+	  }
 
+	  if (const auto kBullet = tank_2_->GetBullet(); kBullet != nullptr && kBullet->IsLaunched())
+	  {
+		if (tank_1_ != nullptr && kBullet->IsCollide(tank_1_))
+		{
+		  kBullet->ActionOnCollision(tank_2_);
+		  tank_2_->DeleteBullet();
+		}
+		if (game_field_->GetBackObstacles()->IsCollide(kBullet))
+		{
+		  tank_2_->DeleteBullet();
+		}
+	  }
+	}
+  } else if (tank_2_ != nullptr)
+  {
+	delete tank_2_;
+	tank_2_ = nullptr;
+  }
 }

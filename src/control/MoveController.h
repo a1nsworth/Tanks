@@ -11,7 +11,7 @@
 class MoveController
 {
  public:
-  static void Processing(Tank *const tank, const float delta_time);
+  static void Processing(Tank *tank, float delta_time);
 };
 
 #endif //TANKS_SRC_CONTROL_MOVECONTROLLER_H_

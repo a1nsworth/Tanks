@@ -8,6 +8,7 @@
 #include "MoveUpCommand.h"
 #include "SpinClockwiseCommand.h"
 #include "SpinAntiClockwiseCommand.h"
+#include "ShotCommand.h"
 
 Command *KeyAssignments::GetMoveDown() const
 {
@@ -44,12 +45,14 @@ void KeyAssignments::SetSpinAntiClockwise(Command *spin_anti_clockwise)
 KeyAssignments::KeyAssignments(const sf::Keyboard::Key move_up,
 							   const sf::Keyboard::Key move_down,
 							   const sf::Keyboard::Key spin_clockwise,
-							   const sf::Keyboard::Key spin_anti_clockwise)
+							   const sf::Keyboard::Key spin_anti_clockwise,
+							   const sf::Keyboard::Key shot)
 {
   move_up_ = new MoveUpCommand(move_up);
   move_down_ = new MoveDownCommand(move_down);
   spin_clockwise_ = new SpinClockwiseCommand(spin_clockwise);
   spin_anti_clockwise_ = new SpinAntiClockwiseCommand(spin_anti_clockwise);
+  shot_ = new ShotCommand(shot);
 }
 Command *KeyAssignments::GetCommandByKey(const sf::Keyboard::Key key)
 {
@@ -61,6 +64,16 @@ Command *KeyAssignments::GetCommandByKey(const sf::Keyboard::Key key)
 	return spin_clockwise_;
   else if (key == spin_anti_clockwise_->GetKey())
 	return spin_anti_clockwise_;
+  else if (key == shot_->GetKey())
+	return shot_;
   else
 	return nullptr;
+}
+Command *KeyAssignments::GetShot() const
+{
+  return shot_;
+}
+void KeyAssignments::SetShot(Command *shot)
+{
+  shot_ = shot;
 }

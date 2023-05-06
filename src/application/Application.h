@@ -29,7 +29,7 @@ class Application : public IRendered, public IUpdatable
   ~Application() = default;
 
   void Render(sf::RenderWindow *render_window) override;
-  void Update() override;
+  void Update(float delta_time) override;
   void UpdateDeltaTime();
   void UpdateEvents();
   void UpdateTanks();

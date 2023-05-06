@@ -5,23 +5,26 @@
 #ifndef TANKS_SRC_FIELD_BACKGROUND_H_
 #define TANKS_SRC_FIELD_BACKGROUND_H_
 
+#include <memory>
+
 #include "../interfaces/IRendered.h"
+#include "Field.h"
 #include "Obstacle.h"
 #include "Ground.h"
 
-// TODO fix Texture(98) error
-class BackGround : public IRendered
+class BackGround : public Field, public IRendered
 {
  private:
-  //std::vector<std::vector<Ground>> grounds_;
-  Ground *ground_;
-
-  sf::Sprite *sprite_;
+  std::unique_ptr<std::vector<std::vector<Object *>>> FillField();
  public:
   BackGround();
-  ~BackGround() = default;
+  ~BackGround() override = default;
 
-  void Render(sf::RenderWindow *const render_window) override;
+  void Render(sf::RenderWindow *render_window) override;
+  bool IsCollide(const SolidBody *collided_object) override;
+  bool IsCollide(const sf::FloatRect &collided_object) override;
+  void ActionOnCollision(SolidBody *collided_object) override;
+  void ActionOnCollision(const sf::FloatRect &collided_object) override;
 };
 
 #endif //TANKS_SRC_FIELD_BACKGROUND_H_

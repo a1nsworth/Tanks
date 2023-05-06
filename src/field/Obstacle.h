@@ -12,6 +12,8 @@ class Obstacle : public SolidBody
 {
  public:
   Obstacle();
+  void ActionOnCollision(SolidBody *collided_object) override;
+  void ActionOnCollision(const sf::FloatRect &collided_object) override;
 };
 
 #endif //TANKS_SRC_FIELD_OBSTACLE_H_

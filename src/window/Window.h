@@ -20,7 +20,7 @@ class Window
   explicit Window(const sf::VideoMode &video_mode, const sf::String &title);
   ~Window() = default;
 
-  [[nodiscard]] sf::RenderWindow *GetRenderWindow() const;
+  sf::RenderWindow *GetRenderWindow();
 };
 
 #endif //TANKS_SRC_WINDOW_WINDOW_H_

@@ -13,4 +13,6 @@ void MoveController::Processing(Tank *const tank, const float delta_time)
 	tank->GetKeyAssignments()->GetSpinAntiClockwise()->Execute(tank, delta_time);
   if (sf::Keyboard::isKeyPressed(tank->GetKeyAssignments()->GetSpinClockwise()->GetKey()))
 	tank->GetKeyAssignments()->GetSpinClockwise()->Execute(tank, delta_time);
+  if (sf::Keyboard::isKeyPressed(tank->GetKeyAssignments()->GetShot()->GetKey()))
+	tank->GetKeyAssignments()->GetShot()->Execute(tank, delta_time);
 }
