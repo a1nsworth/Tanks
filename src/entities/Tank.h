@@ -34,12 +34,15 @@ class Tank
   sf::Color color_;
 
   sf::Vector2f direct_;
-  float movement_speed_ = 100000;
-  const float angle_ = 200000;
+  const float angel_ = 200000;
+  const float movement_speed_ = 100000;
+  const float split_speed_ = 1;
+  float current_movement_speed_ = movement_speed_;
+  float current_split_speed_ = 0;
 
   Bullet *bullet_ = nullptr;
   const float duration_ = 2;
-  float last_shoot_ = 0;
+  float time_last_shoot_ = 0;
   sf::Clock clock_;
 
   KeyAssignments *key_assignments_;

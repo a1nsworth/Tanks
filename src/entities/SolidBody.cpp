@@ -6,7 +6,7 @@
 
 bool SolidBody::IsCollide(const SolidBody *const collided_object)
 {
-  return GetSprite().getGlobalBounds().intersects(collided_object->GetSprite().getGlobalBounds());
+  return IsCollide(collided_object->GetSprite().getGlobalBounds());
 }
 bool SolidBody::IsCollide(const sf::FloatRect &collided_object)
 {

@@ -12,6 +12,8 @@ void Tank::Render(sf::RenderWindow *const render_window)
 }
 void Tank::Update(const float delta_time)
 {
+  current_movement_speed_ = movement_speed_;
+  current_split_speed_ = split_speed_;
   UpdateDirect();
   if (bullet_ != nullptr)
 	bullet_->Update(delta_time);
@@ -37,7 +39,7 @@ void Tank::SetTextureRectByColor()
 }
 void Tank::SetSettings()
 {
-  sprite_.setScale(1.1, 1.1);
+  sprite_.setScale(1, 1);
   sprite_.setOrigin(WIDTH_TANK / 2., HEIGHT_TANK / 2.);
 }
 void Tank::UpdateDirect()
@@ -47,7 +49,7 @@ void Tank::UpdateDirect()
 }
 void Tank::Move(const sf::Vector2f &direct, const float delta_time)
 {
-  sprite_.move(direct * delta_time * movement_speed_);
+  sprite_.move(direct * delta_time * current_movement_speed_);
 }
 void Tank::MoveUp(const float delta_time)
 {
@@ -59,15 +61,15 @@ void Tank::MoveDown(const float delta_time)
 }
 void Tank::Spin(const float angle, const float delta_time)
 {
-  sprite_.rotate(angle * delta_time);
+  sprite_.rotate(angle * delta_time * current_split_speed_);
 }
 void Tank::SpinClockwise(const float delta_time)
 {
-  Spin(-angle_, delta_time);
+  Spin(-angel_, delta_time);
 }
 void Tank::SpinAntiClockwise(const float delta_time)
 {
-  Spin(angle_, delta_time);
+  Spin(angel_, delta_time);
 }
 KeyAssignments *Tank::GetKeyAssignments() const
 {
@@ -80,41 +82,62 @@ void Tank::ActionOnCollision(SolidBody *collided_object)
 void Tank::ActionOnCollision(const sf::FloatRect &collided_object)
 {
   {
+	const auto kTankGlobalBounds = sprite_.getGlobalBounds();
+	const auto kTankOrigin = sprite_.getOrigin();
 #pragma region Коллизия слева
-	if (const auto kX = GetSprite().getPosition().x - GetSprite().getOrigin().x; kX < collided_object.top)
+	if (kTankGlobalBounds.top < collided_object.top
+		&& kTankGlobalBounds.top + kTankGlobalBounds.height < collided_object.top + collided_object.height
+		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
+		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
 	{
-	  GetLinkSprite().setPosition(collided_object.top + GetSprite().getOrigin().x, GetSprite().getPosition().y);
+	  current_split_speed_ = 0;
+	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
+						  collided_object.top - kTankGlobalBounds.height + kTankOrigin.y);
 	}
 #pragma endregion
 #pragma region Коллизия слева-сверху
-	if (const auto kY = GetSprite().getPosition().y - GetSprite().getOrigin().y; kY < collided_object.left)
+	if (kTankGlobalBounds.top > collided_object.top
+		&& kTankGlobalBounds.top + kTankGlobalBounds.height > collided_object.top + collided_object.height
+		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
+		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
 	{
-	  GetLinkSprite().setPosition(GetSprite().getPosition().x, collided_object.left + GetSprite().getOrigin().y);
+	  current_split_speed_ = 0;
+	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
+						  collided_object.top + collided_object.height + kTankOrigin.y);
 	}
 #pragma endregion
-#pragma region Коллизия справа
-	if (const auto kX = GetSprite().getPosition().x + GetSprite().getOrigin().x; kX
-		> collided_object.width + collided_object.left)
+#pragma region Коолизия снизу
+	if (kTankGlobalBounds.top < collided_object.top
+		&& kTankGlobalBounds.top + kTankGlobalBounds.height
+			< collided_object.top + collided_object.height
+		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
+		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
 	{
-	  GetLinkSprite().setPosition(collided_object.width + collided_object.left - GetSprite().getOrigin().x,
-								  GetSprite().getPosition().y);
+	  current_split_speed_ = 0;
+
+	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
+						  collided_object.top - collided_object.height + kTankOrigin.y);
 	}
 #pragma endregion
-#pragma region Коолизия справа-снизу
-	if (const auto kY = GetSprite().getPosition().y + GetSprite().getOrigin().y; kY
-		> collided_object.height + collided_object.top)
+#pragma region Коллизия сверху
+	if (kTankGlobalBounds.top > collided_object.top
+		&& kTankGlobalBounds.top + kTankGlobalBounds.height
+			> collided_object.top + collided_object.height
+		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
+		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
 	{
-	  GetLinkSprite().setPosition(GetSprite().getPosition().x,
-								  collided_object.height + collided_object.top - GetSprite().getOrigin().y);
+	  current_split_speed_ = 0;
+	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
+						  collided_object.top + kTankGlobalBounds.height + kTankOrigin.y);
 	}
 #pragma endregion
   }
 }
 void Tank::Shot(const float delta_time)
 {
-  if (auto now = clock_.getElapsedTime().asSeconds(); last_shoot_ == 0 || now - last_shoot_ >= duration_)
+  if (auto now = clock_.getElapsedTime().asSeconds(); time_last_shoot_ == 0 || now - time_last_shoot_ >= duration_)
   {
-	last_shoot_ = now;
+	time_last_shoot_ = now;
 
 	bullet_ = new SimpleBullet(sprite_.getPosition(),
 							   sprite_.getRotation(), sf::Vector2f(direct_.x, -direct_.y));
