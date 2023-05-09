@@ -25,8 +25,6 @@ std::unique_ptr<std::vector<std::vector<Object *>>> BackGround::FillField()
 	{
 	  field.get()->at(i).at(j) = new Ground();
 	  field.get()->at(i).at(j)->GetLinkSprite().setPosition(j * WIDTH_GROUND, i * HEIGHT_GROUND);
-	  field.get()->at(i).at(j)->GetLinkSprite().setOrigin(WIDTH_GROUND / 2., HEIGHT_GROUND / 2.);
-
 	}
 
   return field;
