@@ -15,11 +15,19 @@ class Object
   sf::Sprite sprite_;
 
  public:
+  Object(const sf::Image &image, const sf::Texture &texture, const sf::Sprite &sprite);
+  Object();
   virtual ~Object() = default;
 
   const sf::Image &GetImage() const;
   const sf::Texture &GetTexture() const;
   const sf::Sprite &GetSprite() const;
+  void SetImage(const sf::Image &image);
+  void SetTexture(const sf::Texture &texture);
+  void SetSprite(const sf::Sprite &sprite);
+
+  sf::Image &GetLinkImage();
+  sf::Texture &GetLinkTexture();
   sf::Sprite &GetLinkSprite();
 };
 

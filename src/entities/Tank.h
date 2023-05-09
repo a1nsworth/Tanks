@@ -9,10 +9,9 @@
 #include <cmath>
 
 #include "SolidBody.h"
+#include "../animation/AnimationDeath.h"
 #include "../control/KeyAssignments.h"
 #include "../application/ApplicationConstants.h"
-#include "../interfaces/IRendered.h"
-#include "../interfaces/IUpdatable.h"
 #include "../interfaces/IShootable.h"
 #include "../interfaces/IHitable.h"
 #include "../shooting/bullets/SimpleBullet.h"
@@ -28,9 +27,9 @@ class Tank
 {
  private:
   bool is_alive_ = true;
-  unsigned int base_health_ = 2;
+  unsigned int base_health_ = 1;
   unsigned int health_ = base_health_;
-  unsigned int lives_ = 1;
+  unsigned int lives_ = 0;
   sf::Color color_;
 
   sf::Vector2f direct_;
@@ -46,6 +45,8 @@ class Tank
   sf::Clock clock_;
 
   KeyAssignments *key_assignments_;
+
+  AnimationDeath *animation_death_;
 
   void SetTextureRectByColor();
   void SetSettings();

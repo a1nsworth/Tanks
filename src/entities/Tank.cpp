@@ -6,22 +6,30 @@
 #include "Tank.h"
 void Tank::Render(sf::RenderWindow *const render_window)
 {
-  if (bullet_ != nullptr && bullet_->IsLaunched())
-	bullet_->Render(render_window);
-  render_window->draw(GetSprite());
+  if (is_alive_)
+  {
+	if (bullet_ != nullptr && bullet_->IsLaunched())
+	  bullet_->Render(render_window);
+	render_window->draw(GetSprite());
+  }
+  animation_death_->Render(render_window);
 }
 void Tank::Update(const float delta_time)
 {
   current_movement_speed_ = movement_speed_;
   current_split_speed_ = split_speed_;
-  UpdateDirect();
-  if (bullet_ != nullptr)
-	bullet_->Update(delta_time);
+  if (is_alive_)
+  {
+	UpdateDirect();
+	if (bullet_ != nullptr)
+	  bullet_->Update(delta_time);
+  }
+  animation_death_->Update(delta_time);
 }
 Tank::Tank(const sf::Color color,
 		   const KeyAssignments key_assignments)
 	: color_(color),
-	  key_assignments_(new KeyAssignments(key_assignments))
+	  key_assignments_(new KeyAssignments(key_assignments)), animation_death_(new AnimationDeath(color_))
 {
   image_.loadFromFile(PATH_TILES);
   texture_.loadFromImage(image_);
@@ -166,6 +174,7 @@ void Tank::Hit(unsigned int damage)
 	  {
 		lives_ = 0;
 		is_alive_ = false;
+		animation_death_->Run(sf::Vector2f(sprite_.getGlobalBounds().left, sprite_.getGlobalBounds().top));
 	  }
 	} else
 	{
