@@ -3,7 +3,7 @@
 //
 
 #include "MoveController.h"
-void MoveController::Processing(Tank *const tank, const float delta_time)
+void MoveController::Processing(Tank *tank, float delta_time)
 {
   if (sf::Keyboard::isKeyPressed(tank->GetKeyAssignments()->GetMoveUp()->GetKey()))
 	tank->GetKeyAssignments()->GetMoveUp()->Execute(tank, delta_time);
