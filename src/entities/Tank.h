@@ -5,8 +5,8 @@
 #ifndef TANKS_SRC_GAME_ENTITIES_TANK_H_
 #define TANKS_SRC_GAME_ENTITIES_TANK_H_
 
-#include <queue>
 #include <cmath>
+#include <algorithm>
 
 #include "SolidBody.h"
 #include "../animation/AnimationDeath.h"
@@ -15,6 +15,7 @@
 #include "../interfaces/IShootable.h"
 #include "../interfaces/IHitable.h"
 #include "../shooting/bullets/SimpleBullet.h"
+#include "../interfaces/IObservable.h"
 
 class Tank
 	: public SolidBody,
@@ -23,11 +24,12 @@ class Tank
 	  public IShootable,
 	  public IMovable,
 	  public ISpinnable,
-	  public IHitable
+	  public IHitable,
+	  public IObservable
 {
  private:
   bool is_alive_ = true;
-  unsigned int base_health_ = 1;
+  unsigned int base_health_ = 4;
   unsigned int health_ = base_health_;
   unsigned int lives_ = 0;
   sf::Color color_;
@@ -48,6 +50,8 @@ class Tank
 
   AnimationDeath *animation_death_;
 
+  std::vector<IObserver *> on_getting_damage_observers_;
+
   void SetTextureRectByColor();
   void SetSettings();
 
@@ -55,6 +59,15 @@ class Tank
   void Spin(float angle, float delta_time) override;
 
   void UpdateDirect();
+
+  void NotifyObservers() override;
+  void RenderObservers(sf::RenderWindow *render_window)
+  {
+	for (auto &observer : on_getting_damage_observers_)
+	{
+	  observer->Render(render_window);
+	}
+  }
  public:
   explicit Tank(sf::Color color, KeyAssignments key_assignments = KeyAssignments(sf::Keyboard::Key::W,
 																				 sf::Keyboard::Key::S,
@@ -83,6 +96,9 @@ class Tank
   void Hit(unsigned int damage) override;
 
   void DeleteBullet();
+
+  void AddObserver(IObserver *observer) override;
+  void RemoveObserver(IObserver *observer) override;
 };
 
 #endif //TANKS_SRC_GAME_ENTITIES_TANK_H_

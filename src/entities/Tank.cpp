@@ -13,6 +13,7 @@ void Tank::Render(sf::RenderWindow *const render_window)
 	render_window->draw(GetSprite());
   }
   animation_death_->Render(render_window);
+  RenderObservers(render_window);
 }
 void Tank::Update(const float delta_time)
 {
@@ -89,57 +90,57 @@ void Tank::ActionOnCollision(SolidBody *collided_object)
 }
 void Tank::ActionOnCollision(const sf::FloatRect &collided_object)
 {
-  {
-	const auto kTankGlobalBounds = sprite_.getGlobalBounds();
-	const auto kTankOrigin = sprite_.getOrigin();
-#pragma region Коллизия слева
-	if (kTankGlobalBounds.top < collided_object.top
-		&& kTankGlobalBounds.top + kTankGlobalBounds.height < collided_object.top + collided_object.height
-		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
-		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
-	{
-	  current_split_speed_ = 0;
-	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
-						  collided_object.top - kTankGlobalBounds.height + kTankOrigin.y);
-	}
-#pragma endregion
-#pragma region Коллизия слева-сверху
-	if (kTankGlobalBounds.top > collided_object.top
-		&& kTankGlobalBounds.top + kTankGlobalBounds.height > collided_object.top + collided_object.height
-		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
-		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
-	{
-	  current_split_speed_ = 0;
-	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
-						  collided_object.top + collided_object.height + kTankOrigin.y);
-	}
-#pragma endregion
-#pragma region Коолизия снизу
-	if (kTankGlobalBounds.top < collided_object.top
-		&& kTankGlobalBounds.top + kTankGlobalBounds.height
-			< collided_object.top + collided_object.height
-		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
-		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
-	{
-	  current_split_speed_ = 0;
-
-	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
-						  collided_object.top - collided_object.height + kTankOrigin.y);
-	}
-#pragma endregion
-#pragma region Коллизия сверху
-	if (kTankGlobalBounds.top > collided_object.top
-		&& kTankGlobalBounds.top + kTankGlobalBounds.height
-			> collided_object.top + collided_object.height
-		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
-		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
-	{
-	  current_split_speed_ = 0;
-	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
-						  collided_object.top + kTankGlobalBounds.height + kTankOrigin.y);
-	}
-#pragma endregion
-  }
+//  {
+//	const auto kTankGlobalBounds = sprite_.getGlobalBounds();
+//	const auto kTankOrigin = sprite_.getOrigin();
+//#pragma region Коллизия слева
+//	if (kTankGlobalBounds.top < collided_object.top
+//		&& kTankGlobalBounds.top + kTankGlobalBounds.height < collided_object.top + collided_object.height
+//		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
+//		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
+//	{
+//	  current_split_speed_ = 0;
+//	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
+//						  collided_object.top - kTankGlobalBounds.height + kTankOrigin.y);
+//	}
+//#pragma endregion
+//#pragma region Коллизия слева-сверху
+//	if (kTankGlobalBounds.top > collided_object.top
+//		&& kTankGlobalBounds.top + kTankGlobalBounds.height > collided_object.top + collided_object.height
+//		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
+//		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
+//	{
+//	  current_split_speed_ = 0;
+//	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
+//						  collided_object.top + collided_object.height + kTankOrigin.y);
+//	}
+//#pragma endregion
+//#pragma region Коолизия снизу
+//	if (kTankGlobalBounds.top < collided_object.top
+//		&& kTankGlobalBounds.top + kTankGlobalBounds.height
+//			< collided_object.top + collided_object.height
+//		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
+//		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
+//	{
+//	  current_split_speed_ = 0;
+//
+//	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
+//						  collided_object.top - collided_object.height + kTankOrigin.y);
+//	}
+//#pragma endregion
+//#pragma region Коллизия сверху
+//	if (kTankGlobalBounds.top > collided_object.top
+//		&& kTankGlobalBounds.top + kTankGlobalBounds.height
+//			> collided_object.top + collided_object.height
+//		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
+//		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
+//	{
+//	  current_split_speed_ = 0;
+//	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
+//						  collided_object.top + kTankGlobalBounds.height + kTankOrigin.y);
+//	}
+//#pragma endregion
+//  }
 }
 void Tank::Shot(const float delta_time)
 {
@@ -162,25 +163,14 @@ const sf::Vector2f &Tank::GetDirect() const
 }
 void Tank::Hit(unsigned int damage)
 {
-  if (is_alive_)
+  if (health_ == 1)
   {
-	if (damage >= health_)
-	{
-	  if (lives_ >= 1)
-	  {
-		health_ = base_health_;
-		lives_--;
-	  } else
-	  {
-		lives_ = 0;
-		is_alive_ = false;
-		animation_death_->Run(sf::Vector2f(sprite_.getGlobalBounds().left, sprite_.getGlobalBounds().top));
-	  }
-	} else
-	{
-	  health_ -= damage;
-	}
-  }
+	is_alive_ = false;
+	animation_death_->Run(sf::Vector2f(sprite_.getGlobalBounds().left, sprite_.getGlobalBounds().top));
+  } else
+	health_ -= damage;
+
+  NotifyObservers();
 }
 void Tank::DeleteBullet()
 {
@@ -194,4 +184,20 @@ bool Tank::IsAlive() const
 const float Tank::GetDuration() const
 {
   return duration_;
+}
+void Tank::RemoveObserver(IObserver *observer)
+{
+  on_getting_damage_observers_.erase(std::remove(on_getting_damage_observers_.begin(),
+												 on_getting_damage_observers_.end(), observer),
+									 on_getting_damage_observers_.end());
+}
+void Tank::AddObserver(IObserver *observer)
+{
+  on_getting_damage_observers_.push_back(observer);
+}
+void Tank::NotifyObservers()
+{
+  std::for_each(on_getting_damage_observers_.begin(),
+				on_getting_damage_observers_.end(),
+				[&](IObserver *observer) { observer->Update(); });
 }
