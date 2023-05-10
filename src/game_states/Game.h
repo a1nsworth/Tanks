@@ -9,6 +9,7 @@
 #include "../entities/Tank.h"
 #include "../control/MoveController.h"
 #include "../application/Application.h"
+#include "../bar/HealthBar.h"
 
 class Game : public IApplicationState
 {

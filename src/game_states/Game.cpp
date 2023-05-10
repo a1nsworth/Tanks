@@ -102,6 +102,11 @@ void Game::InitTanks()
 
   tank_1_->GetLinkSprite().setPosition(WIDTH_MAIN_WINDOW / 2., HEIGHT_MAIN_WINDOW / 2.);
   tank_2_->GetLinkSprite().setPosition(WIDTH_MAIN_WINDOW / 4., HEIGHT_MAIN_WINDOW / 4.);
+
+  tank_1_->AddObserver(new HealthBar(sf::Color::Red,
+									 sf::Vector2f(WIDTH_MAIN_WINDOW - (WIDTH_HEALTH_BAR << 1), HEIGHT_HEALTH_BAR)));
+  tank_2_->AddObserver(new HealthBar(sf::Color::Yellow,
+									 sf::Vector2f(WIDTH_HEALTH_BAR >> 1, HEIGHT_HEALTH_BAR)));
 }
 Game::Game()
 {
