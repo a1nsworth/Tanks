@@ -52,22 +52,18 @@ class Tank
 
   std::vector<IObserver *> on_getting_damage_observers_;
 
-  void SetTextureRectByColor();
-  void SetSettings();
+  void SetUpTextureRectByColor();
+  void SetUpSettings();
 
+  // TankMoveController
   void Move(const sf::Vector2f &direct, float delta_time) override;
   void Spin(float angle, float delta_time) override;
 
   void UpdateDirect();
 
   void NotifyObservers() override;
-  void RenderObservers(sf::RenderWindow *render_window)
-  {
-	for (auto &observer : on_getting_damage_observers_)
-	{
-	  observer->Render(render_window);
-	}
-  }
+  // Убрать из танка
+  void RenderObservers(sf::RenderWindow *render_window);
  public:
   explicit Tank(sf::Color color, KeyAssignments key_assignments = KeyAssignments(sf::Keyboard::Key::W,
 																				 sf::Keyboard::Key::S,
@@ -89,13 +85,14 @@ class Tank
   void MoveDown(float delta_time);
   void SpinClockwise(float delta_time);
   void SpinAntiClockwise(float delta_time);
+  // ShotController
   void Shot(float delta_time) override;
+  void DeleteBullet();
 
   void ActionOnCollision(SolidBody *collided_object) override;
   void ActionOnCollision(const sf::FloatRect &collided_object) override;
-  void Hit(unsigned int damage) override;
 
-  void DeleteBullet();
+  void Hit(unsigned int damage) override;
 
   void AddObserver(IObserver *observer) override;
   void RemoveObserver(IObserver *observer) override;

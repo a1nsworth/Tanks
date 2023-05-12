@@ -19,15 +19,18 @@ class Game : public IApplicationState
   Tank *tank_1_;
   Tank *tank_2_;
 
+  bool is_paused_ = false;
+
  public:
   Game();
-
   ~Game() = default;
+
+  bool IsPaused() const;
+  void SetIsPaused(bool is_paused);
 
   void Update(Application *application, float delta_time) override;
   void Render(Application *application) override;
-
-  void UpdateEvents(Window *window, float delta_time);
+  void UpdateEvents(Application *application, float delta_time) override;
 
   void UpdateTanks(float delta_time);
   void RenderTanks(Window *window);

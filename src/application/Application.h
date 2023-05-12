@@ -7,7 +7,7 @@
 
 #include "../window/MainWindow.h"
 #include "../interfaces/IApplicationState.h"
-#include "../game_states/Game.h"
+#include "../game_states/Menu.h"
 #include "ApplicationConstants.h"
 
 class Application
@@ -28,6 +28,8 @@ class Application
   void InitMainWindow();
  public:
   MainWindow *GetWindow();
+  IApplicationState *GetState() const;
+  void SetState(IApplicationState *state);
 
   Application(const Application &) = delete;
   Application &operator=(const Application &) = delete;

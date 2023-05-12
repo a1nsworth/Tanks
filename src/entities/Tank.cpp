@@ -36,17 +36,18 @@ Tank::Tank(const sf::Color color,
   texture_.loadFromImage(image_);
   sprite_.setTexture(texture_);
 
-  SetTextureRectByColor();
-  SetSettings();
+  SetUpTextureRectByColor();
+  SetUpSettings();
 }
-void Tank::SetTextureRectByColor()
+// Отдельный компонент
+void Tank::SetUpTextureRectByColor()
 {
   if (color_ == sf::Color::Red)
 	sprite_.setTextureRect(sf::IntRect(250, 705, WIDTH_TANK, HEIGHT_TANK));
   else if (color_ == sf::Color::Yellow)
 	sprite_.setTextureRect(sf::IntRect(250, 600, WIDTH_TANK, HEIGHT_TANK));
 }
-void Tank::SetSettings()
+void Tank::SetUpSettings()
 {
   sprite_.setScale(1, 1);
   sprite_.setOrigin(WIDTH_TANK / 2., HEIGHT_TANK / 2.);
@@ -90,57 +91,50 @@ void Tank::ActionOnCollision(SolidBody *collided_object)
 }
 void Tank::ActionOnCollision(const sf::FloatRect &collided_object)
 {
-//  {
-//	const auto kTankGlobalBounds = sprite_.getGlobalBounds();
-//	const auto kTankOrigin = sprite_.getOrigin();
-//#pragma region Коллизия слева
-//	if (kTankGlobalBounds.top < collided_object.top
-//		&& kTankGlobalBounds.top + kTankGlobalBounds.height < collided_object.top + collided_object.height
-//		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
-//		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
-//	{
-//	  current_split_speed_ = 0;
-//	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
-//						  collided_object.top - kTankGlobalBounds.height + kTankOrigin.y);
-//	}
-//#pragma endregion
-//#pragma region Коллизия слева-сверху
-//	if (kTankGlobalBounds.top > collided_object.top
-//		&& kTankGlobalBounds.top + kTankGlobalBounds.height > collided_object.top + collided_object.height
-//		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
-//		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
-//	{
-//	  current_split_speed_ = 0;
-//	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
-//						  collided_object.top + collided_object.height + kTankOrigin.y);
-//	}
-//#pragma endregion
-//#pragma region Коолизия снизу
-//	if (kTankGlobalBounds.top < collided_object.top
-//		&& kTankGlobalBounds.top + kTankGlobalBounds.height
-//			< collided_object.top + collided_object.height
-//		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
-//		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
-//	{
-//	  current_split_speed_ = 0;
-//
-//	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
-//						  collided_object.top - collided_object.height + kTankOrigin.y);
-//	}
-//#pragma endregion
-//#pragma region Коллизия сверху
-//	if (kTankGlobalBounds.top > collided_object.top
-//		&& kTankGlobalBounds.top + kTankGlobalBounds.height
-//			> collided_object.top + collided_object.height
-//		&& kTankGlobalBounds.left < collided_object.left + collided_object.width
-//		&& kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
-//	{
-//	  current_split_speed_ = 0;
-//	  sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
-//						  collided_object.top + kTankGlobalBounds.height + kTankOrigin.y);
-//	}
-//#pragma endregion
-//  }
+  const auto kTankGlobalBounds = sprite_.getGlobalBounds();
+  const auto kTankOrigin = sprite_.getOrigin();
+#pragma region Коллизия справа
+  if (kTankGlobalBounds.left < collided_object.left
+	  && kTankGlobalBounds.left + kTankGlobalBounds.width < collided_object.left + collided_object.width
+	  && kTankGlobalBounds.top < collided_object.top + collided_object.height
+	  && kTankGlobalBounds.top + kTankGlobalBounds.height > collided_object.top)
+  {
+	sprite_.setPosition(collided_object.left - kTankGlobalBounds.width,
+						kTankGlobalBounds.top + kTankOrigin.y);
+  }
+#pragma endregion
+#pragma region Коллизия слева
+  else if (kTankGlobalBounds.left > collided_object.left
+	  && kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left + collided_object.width
+	  && kTankGlobalBounds.top < collided_object.top + collided_object.height
+	  && kTankGlobalBounds.top + kTankGlobalBounds.height > collided_object.top)
+  {
+	sprite_.setPosition(collided_object.left + collided_object.width,
+						kTankGlobalBounds.top + kTankOrigin.y);
+  }
+#pragma endregion
+#pragma region Коолизия снизу
+  if (kTankGlobalBounds.top < collided_object.top
+	  && kTankGlobalBounds.top + kTankGlobalBounds.height
+		  < collided_object.top + collided_object.height
+	  && kTankGlobalBounds.left < collided_object.left + collided_object.width
+	  && kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
+  {
+	sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
+						collided_object.top - collided_object.height + kTankOrigin.y);
+  }
+#pragma endregion
+#pragma region Коллизия сверху
+  else if (kTankGlobalBounds.top > collided_object.top
+	  && kTankGlobalBounds.top + kTankGlobalBounds.height
+		  > collided_object.top + collided_object.height
+	  && kTankGlobalBounds.left < collided_object.left + collided_object.width
+	  && kTankGlobalBounds.left + kTankGlobalBounds.width > collided_object.left)
+  {
+	sprite_.setPosition(kTankGlobalBounds.left + kTankOrigin.x,
+						collided_object.top + kTankGlobalBounds.height + kTankOrigin.y);
+  }
+#pragma endregion
 }
 void Tank::Shot(const float delta_time)
 {
@@ -200,4 +194,11 @@ void Tank::NotifyObservers()
   std::for_each(on_getting_damage_observers_.begin(),
 				on_getting_damage_observers_.end(),
 				[&](IObserver *observer) { observer->Update(); });
+}
+void Tank::RenderObservers(sf::RenderWindow *render_window)
+{
+  for (auto &observer : on_getting_damage_observers_)
+  {
+	observer->Render(render_window);
+  }
 }

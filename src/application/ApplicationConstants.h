@@ -8,7 +8,9 @@
 // TODO НАСЛЕДОВАНИЕ ОТ Drawable, Transformable
 // TODO Цвета пуль
 
+#define PATH_BACKGROUND "../../resources/Background.png"
 #define PATH_TILES "../../resources/Tiles.png"
+#define PATH_FONT "../../resources/pixel_font.ttf"
 #define WIDTH_MAIN_WINDOW 1738
 #define HEIGHT_MAIN_WINDOW 948
 #define TITLE_MAIN_WINDOW "Tanks 1 vs 1"

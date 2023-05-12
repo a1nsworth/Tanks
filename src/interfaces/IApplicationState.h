@@ -13,6 +13,7 @@ class Application;
 class IApplicationState
 {
  public:
+  virtual void UpdateEvents(Application *application, float delta_time) = 0;
   virtual void Update(Application *application, float delta_time) = 0;
   virtual void Render(Application *application) = 0;
 };
