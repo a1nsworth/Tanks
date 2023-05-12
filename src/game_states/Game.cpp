@@ -6,7 +6,7 @@
 void Game::Update(Application *application, float delta_time)
 {
   UpdateTanks(delta_time);
-  UpdateEvents(application->GetWindow(), delta_time);
+  UpdateEvents(application, delta_time);
 }
 void Game::Render(Application *application)
 {
@@ -15,14 +15,14 @@ void Game::Render(Application *application)
   RenderTanks(application->GetWindow());
   application->GetWindow()->GetRenderWindow()->display();
 }
-void Game::UpdateEvents(Window *window, const float delta_time)
+void Game::UpdateEvents(Application *application, const float delta_time)
 {
   sf::Event ev{};
-  while (window->GetRenderWindow()->pollEvent(ev))
+  while (application->GetWindow()->GetRenderWindow()->pollEvent(ev))
   {
 	if (ev.type == sf::Event::Closed)
 	{
-	  window->GetRenderWindow()->close();
+	  application->GetWindow()->GetRenderWindow()->close();
 	}
   }
 
@@ -112,4 +112,12 @@ Game::Game()
 {
   InitTanks();
   InitGameField();
+}
+bool Game::IsPaused() const
+{
+  return is_paused_;
+}
+void Game::SetIsPaused(bool is_paused)
+{
+  is_paused_ = is_paused;
 }

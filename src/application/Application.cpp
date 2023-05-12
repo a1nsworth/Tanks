@@ -7,7 +7,7 @@
 Application::Application()
 {
   InitMainWindow();
-  state_ = new Game();
+  state_ = new Menu();
 }
 void Application::UpdateDeltaTime()
 {
@@ -19,7 +19,7 @@ void Application::InitMainWindow()
 }
 Application &Application::Instance()
 {
-  static Application *game = new Application();
+  static auto *game = new Application();
   return *game;
 }
 void Application::Run()
@@ -27,6 +27,7 @@ void Application::Run()
   while (main_window_->GetRenderWindow()->isOpen())
   {
 	UpdateDeltaTime();
+	state_->UpdateEvents(this, delta_time_);
 	state_->Update(this, delta_time_);
 	state_->Render(this);
   }
@@ -34,4 +35,12 @@ void Application::Run()
 MainWindow *Application::GetWindow()
 {
   return main_window_;
+}
+IApplicationState *Application::GetState() const
+{
+  return state_;
+}
+void Application::SetState(IApplicationState *state)
+{
+  state_ = state;
 }
