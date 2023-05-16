@@ -21,7 +21,7 @@ class HealthBar : public IObserver
   void FillBars(const sf::Color &color, const sf::Vector2f &position);
  public:
   HealthBar(const sf::Color &color, const sf::Vector2f &position);
-  ~HealthBar() = default;
+  ~HealthBar()  = default;
 
   void Update() override;
   void Render(sf::RenderWindow *render_window) override;

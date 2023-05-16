@@ -6,7 +6,7 @@
 #define TANKS_SRC_GAME_STATES_MENU_H_
 
 #include "../application/Application.h"
-#include "../button/ButtonBuilder.h"
+#include "../ui/button/ButtonBuilder.h"
 #include "../control/MenuMouseController.h"
 #include "../entities/Object.h"
 

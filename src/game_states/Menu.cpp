@@ -4,10 +4,7 @@
 
 #include "Menu.h"
 #include "Game.h"
-void Menu::Update(Application *application, float delta_time)
-{
-  button_run_->Update(delta_time);
-}
+void Menu::Update(Application *application, float delta_time) {}
 void Menu::Render(Application *application)
 {
   application->GetWindow()->GetRenderWindow()->clear();
@@ -68,9 +65,7 @@ void Menu::UpdateEvents(Application *application, float delta_time)
 	}
   }
 
-  const auto kMousePosition = sf::Mouse::getPosition(*application->GetWindow()->GetRenderWindow());
-  std::cout << kMousePosition.x << "|" << kMousePosition.y << '\n';
-  MenuMouseController::Processing(sf::Vector2f(kMousePosition.x, kMousePosition.y), button_run_);
+  button_run_->Update(sf::Mouse::getPosition(*application->GetWindow()->GetRenderWindow()));
 
   if (button_run_->GetState() == Button::State::ACTIVE)
   {

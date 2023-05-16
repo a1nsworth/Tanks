@@ -35,7 +35,7 @@ class AnimationDeath : public Animation, public IMovable
   }
  public:
   explicit AnimationDeath(const sf::Color &color);
-  ~AnimationDeath() override = default;
+  ~AnimationDeath()  = default;
 
   bool IsFinished() const;
   bool IsStarted() const;

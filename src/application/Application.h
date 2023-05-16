@@ -2,8 +2,8 @@
 // Created by Daniel on 29.04.2023.
 //
 
-#ifndef _GAME_H_
-#define _GAME_H_
+#ifndef TANKS_SRC_APPLICATION_APPLICATION_H_
+#define TANKS_SRC_APPLICATION_APPLICATION_H_
 
 #include "../window/MainWindow.h"
 #include "../interfaces/IApplicationState.h"
@@ -39,4 +39,4 @@ class Application
   void Run();
 };
 
-#endif //_GAME_H_
+#endif //TANKS_SRC_APPLICATION_APPLICATION_H_

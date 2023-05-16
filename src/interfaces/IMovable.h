@@ -9,6 +9,7 @@
 
 class IMovable
 {
+ public:
   virtual void Move(const sf::Vector2f &direct, float delta_time) = 0;
 };
 

@@ -5,7 +5,7 @@
 #ifndef TANKS_SRC_CONTROL_MENUMOUSECONTROLLER_H_
 #define TANKS_SRC_CONTROL_MENUMOUSECONTROLLER_H_
 
-#include "../button/Button.h"
+#include "../ui/button/Button.h"
 
 class MenuMouseController
 {

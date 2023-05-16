@@ -2,8 +2,8 @@
 // Created by Daniel on 30.04.2023.
 //
 
-#ifndef TANKS_SRC_GAME_ENTITIES_GAMEFIELD_H_
-#define TANKS_SRC_GAME_ENTITIES_GAMEFIELD_H_
+#ifndef TANKS_SRC_FIELD_GAMEFIELD_H_
+#define TANKS_SRC_FIELD_GAMEFIELD_H_
 
 #include <vector>
 
@@ -23,8 +23,8 @@ class GameField : public IRendered
 
   void Render(sf::RenderWindow *render_window) override;
 
-  BackGround *GetBackGround() const;
-  BackObstacles *GetBackObstacles() const;
+  [[nodiscard]] BackGround *GetBackGround() const;
+  [[nodiscard]] BackObstacles *GetBackObstacles() const;
 };
 
-#endif //TANKS_SRC_GAME_ENTITIES_GAMEFIELD_H_
+#endif //TANKS_SRC_FIELD_GAMEFIELD_H_

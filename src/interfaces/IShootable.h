@@ -7,6 +7,7 @@
 
 class IShootable
 {
+ public:
   virtual void Shot(float delta_time) = 0;
 };
 
