@@ -9,9 +9,10 @@
 
 class IObservable
 {
-  virtual void AddObserver(IObserver *observer) = 0;
-  virtual void RemoveObserver(IObserver *observer) = 0;
-  virtual void NotifyObservers() = 0;
+ public:
+  virtual void Add(IObserver *observer) = 0;
+  virtual void Remove(IObserver *observer) = 0;
+  virtual void Notify() = 0;
 };
 
 #endif //TANKS_SRC_INTERFACES_IOBSERVABLE_H_

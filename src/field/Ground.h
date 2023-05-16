@@ -15,7 +15,7 @@ class Ground : public Object
 {
  public:
   Ground();
-  ~Ground() = default;
+  ~Ground() override = default;
 };
 
 #endif //TANKS_SRC_FIELD_GROUND_H_

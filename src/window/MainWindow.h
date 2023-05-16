@@ -2,8 +2,8 @@
 // Created by Daniel on 29.04.2023.
 //
 
-#ifndef COURSE_WORK_SRC_GAME_MAINWINDOW_H
-#define COURSE_WORK_SRC_GAME_MAINWINDOW_H
+#ifndef TANKS_SRC_WINDOW_MAINWINDOW_H_
+#define TANKS_SRC_WINDOW_MAINWINDOW_H_
 
 #include "Window.h"
 #include "../application/ApplicationConstants.h"
@@ -15,4 +15,4 @@ class MainWindow : public Window
   ~MainWindow() = default;
 };
 
-#endif //COURSE_WORK_SRC_GAME_MAINWINDOW_H
+#endif //TANKS_SRC_WINDOW_MAINWINDOW_H_

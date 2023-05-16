@@ -7,6 +7,7 @@
 
 class ISpinnable
 {
+ public:
   virtual void Spin(float angle, float delta_time) = 0;
 };
 

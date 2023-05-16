@@ -5,14 +5,33 @@
 #include "Game.h"
 void Game::Update(Application *application, float delta_time)
 {
-  UpdateTanks(delta_time);
+  if (!is_paused_)
+  {
+	UpdateTanks(delta_time);
+  } else
+  {
+	pause_menu_->Update(sf::Mouse::getPosition(*application->GetWindow()->GetRenderWindow()));
+
+	if (pause_menu_->GetMainMenu()->GetState() == Button::State::ACTIVE)
+	{
+	  OnClickedMainMenu(application);
+	} else if (pause_menu_->GetNewGame()->GetState() == Button::State::ACTIVE)
+	{
+	  OnClickedNewGame(application);
+	} else if (pause_menu_->GetResume()->GetState() == Button::State::ACTIVE)
+	{
+	  OnClickedResume();
+	}
+  }
   UpdateEvents(application, delta_time);
 }
 void Game::Render(Application *application)
 {
   application->GetWindow()->GetRenderWindow()->clear();
   RenderGameField(application->GetWindow());
+  RenderHealthBars(application->GetWindow());
   RenderTanks(application->GetWindow());
+  RenderPauseMenu(application->GetWindow());
   application->GetWindow()->GetRenderWindow()->display();
 }
 void Game::UpdateEvents(Application *application, const float delta_time)
@@ -24,11 +43,21 @@ void Game::UpdateEvents(Application *application, const float delta_time)
 	{
 	  application->GetWindow()->GetRenderWindow()->close();
 	}
+	if (ev.type == sf::Event::KeyPressed)
+	{
+	  if (ev.key.code == sf::Keyboard::Escape)
+	  {
+		is_paused_ = !is_paused_;
+	  }
+	}
   }
 
 #pragma region Обработка нажатий клавиш
-  MoveController::Processing(tank_1_, delta_time);
-  MoveController::Processing(tank_2_, delta_time);
+  if (!is_paused_)
+  {
+	MoveController::Processing(tank_1_, delta_time);
+	MoveController::Processing(tank_2_, delta_time);
+  }
 #pragma endregion
 }
 void Game::UpdateTanks(const float delta_time)
@@ -103,15 +132,15 @@ void Game::InitTanks()
   tank_1_->GetLinkSprite().setPosition(WIDTH_MAIN_WINDOW / 2., HEIGHT_MAIN_WINDOW / 2.);
   tank_2_->GetLinkSprite().setPosition(WIDTH_MAIN_WINDOW / 4., HEIGHT_MAIN_WINDOW / 4.);
 
-  tank_1_->AddObserver(new HealthBar(sf::Color::Red,
-									 sf::Vector2f(WIDTH_MAIN_WINDOW - (WIDTH_HEALTH_BAR << 1), HEIGHT_HEALTH_BAR)));
-  tank_2_->AddObserver(new HealthBar(sf::Color::Yellow,
-									 sf::Vector2f(WIDTH_HEALTH_BAR >> 1, HEIGHT_HEALTH_BAR)));
+  tank_1_->on_getting_damage.Add(health_bar_1_);
+  tank_2_->on_getting_damage.Add(health_bar_2_);
 }
 Game::Game()
 {
-  InitTanks();
+  InitHealthBars();
   InitGameField();
+  InitPauseMenu();
+  InitTanks();
 }
 bool Game::IsPaused() const
 {
@@ -120,4 +149,26 @@ bool Game::IsPaused() const
 void Game::SetIsPaused(bool is_paused)
 {
   is_paused_ = is_paused;
+}
+void Game::InitHealthBars()
+{
+  health_bar_1_ = new HealthBar(sf::Color::Red,
+								sf::Vector2f(WIDTH_MAIN_WINDOW - (WIDTH_HEALTH_BAR << 1),
+											 HEIGHT_HEALTH_BAR));
+  health_bar_2_ = new HealthBar(sf::Color::Yellow,
+								sf::Vector2f(WIDTH_HEALTH_BAR >> 1, HEIGHT_HEALTH_BAR));
+}
+void Game::RenderHealthBars(Window *window)
+{
+  health_bar_1_->Render(window->GetRenderWindow());
+  health_bar_2_->Render(window->GetRenderWindow());
+}
+void Game::InitPauseMenu()
+{
+  pause_menu_ = new PauseMenu(sf::Vector2f(game_field_->GetBackObstacles()->GetFloatRect().width / 2., game_field_->GetBackObstacles()->GetFloatRect().height / 2.));
+}
+void Game::RenderPauseMenu(Window *window)
+{
+  if (is_paused_)
+	pause_menu_->Render(window->GetRenderWindow());
 }

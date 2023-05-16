@@ -1,0 +1,488 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+enum ButtonState {
+    IDLE,
+    HOVER,
+    ACTIVE
+}
+
+interface IApplicationState
+interface ICollided
+interface IHitable
+interface IMovable
+interface IRendered
+interface IShootable
+interface ISpinnable
+interface IUpdatable
+interface IUpdatableEvents
+interface IObservable
+interface IObserver
+
+abstract Command
+
+class Object
+class SolidBody
+
+class Window
+class MainWindow
+
+class Application
+class Game
+class Menu
+
+class Tank
+class Bullet
+class SimpleBullet
+
+class KeyAssignments
+class MoveUpCommand
+class MoveDownCommand
+class ShootCommand
+class SpinAntiClockwiseCommand
+class SpinClockwiseCommand
+class MoveCommand
+class MoveController
+
+class Field
+class GameObstacles
+class BackGround
+class Obstacle
+class GameField
+class Ground
+
+class Subject
+
+class Button
+class ButtonBuilder
+class ButtonWithPressedText
+
+class HealthBar
+
+class PauseMenu
+
+Application *-- IApplicationState
+Application *-- MainWindow
+Game *-- GameField
+Game *--"2" Tank
+Game *--"2" HealthBar
+Game *-- PauseMenu
+Game --> Application
+
+
+Tank --> Subject
+
+HealthBar *-- "5" Object
+
+Tank *-- KeyAssignments
+
+Field *-- "N" Object
+
+Button --> ButtonState
+Button ..> ButtonBuilder
+ButtonBuilder *-- Button
+
+
+GameField *-- BackGround
+GameField *-- BackObstacles
+
+KeyAssignments *--"N" Command
+MoveController --> Tank
+
+interface IApplicationState {
+    + void UpdateEvents(Application *application, float delta_time)
+    + void Update(Application *application, float delta_time)
+    + void Render(Application *application)
+}
+interface ICollided{
+}
+interface IHitable {
+    + void Hit(unsigned int damage)
+}
+interface IMovable {
+    + void Move(const sf::Vector2f &direct, float delta_time)
+}
+interface IRendered {
+    + void Render(sf::RenderWindow *render_window)
+}
+interface IShootable {
+    + void Shot(float delta_time)
+}
+interface ISpinnable {
+    + void Spin(float angle, float delta_time)
+}
+interface IUpdatable {
+    + void Update(float delta_time)
+}
+interface IUpdatableEvents {
+    + void UpdateEvents(sf::RenderWindow *render_window, float delta_time)
+}
+interface IObservable {
+    + void Add(IObserver *observer)
+    + void Remove(IObserver *observer)
+    + void Notify()
+}
+interface IObserver extends IRendered {
+    + void Update() = 0;
+}
+
+class Window {
+  # sf::RenderWindow *render_window_
+
+  + Window(const sf::VideoMode &video_mode, const sf::String &title)
+  + sf::RenderWindow *GetRenderWindow()
+}
+
+class MainWindow extends Window {
+    + MainWindow(unsigned short fps = 60, bool vertical_sync = true)
+}
+
+class Subject implements IObservable {
+  - std::list<IObserver *> observers
+
+  + Subject()
+
+  + void Add(IObserver *observer)
+  + void Remove(IObserver *observer)
+  + void Notify()
+}
+
+class Application {
+  -MainWindow *main_window_;
+
+  -sf::Clock delta_clock_;
+  -float delta_time_;
+
+  -IApplicationState *state_;
+
+  -Application();
+
+  -void UpdateDeltaTime();
+  -void InitMainWindow();
+
+  +MainWindow *GetWindow();
+  +IApplicationState *GetState() const;
+  +void SetState(IApplicationState *state);
+
+  +Application(const Application &) = delete;
+  +Application &operator=(const Application &) = delete;
+  {static} +Application &Instance();
+
+  +void Run();
+}
+
+class Tank implements IUpdatable, IRendered, IMovable, IHitable, ISpinnable, IShootable {
+      - bool is_alive
+      - unsigned int base_health
+      - unsigned int health
+      - unsigned int lives
+      - sf::Color color
+
+      - sf::Vector2f direct
+      - const float angel
+      - const float movement_speed
+      - const float split_speed
+      - float current_movement_speed
+      - float current_split_speed
+
+      - Bullet *bullet
+      - const float duration
+      - float time_last_shoot
+      - sf::Clock clock
+
+      - KeyAssignments *key_assignments
+      - AnimationDeath *animation_death
+
+      + Subject on_getting_damage
+
+      - void SetUpTextureRectByColor()
+      - void SetUpSettings()
+
+      + Tank(sf::Color color, KeyAssignments key_assignments)
+
+      - void Move(const sf::Vector2f &direct, float delta_time)
+      - void Spin(float angle, float delta_time)
+      - void UpdateDirect()
+
+      + bool IsAlive()
+      + Bullet *GetBullet()
+      + const float GetDuration()
+      + const sf::Vector2f &GetDirect()
+      + KeyAssignments *GetKeyAssignments()
+
+      + void Render(sf::RenderWindow *render_window)
+      + void Update(float delta_time)
+
+      + void MoveUp(float delta_time)
+      + void MoveDown(float delta_time)
+      + void SpinClockwise(float delta_time)
+      + void SpinAntiClockwise(float delta_time)
+      + void Shot(float delta_time)
+      + void DeleteBullet()
+
+      + void ActionOnCollision(SolidBody *collided_object)
+      + void ActionOnCollision(const sf::FloatRect &collided_object)
+
+      + void Hit(unsigned int damage)
+}
+class Game implements IApplicationState {
+  - GameField *game_field;
+
+  - Tank *tank_1
+  - Tank *tank_2
+  - HealthBar *health_bar_1
+  - HealthBar *health_bar_2
+
+  - PauseMenu *pause_menu
+
+  - bool is_paused
+
+  + Game()
+
+  + bool IsPaused() const
+  + void SetIsPaused(bool is_paused)
+
+  + void Update(Application *application, float delta_time)
+  + void Render(Application *application)
+  + void UpdateEvents(Application *application, float delta_time)
+
+  + void UpdateTanks(float delta_time)
+  + void RenderTanks(Window *window)
+  + void RenderHealthBars(Window *window)
+  + void RenderGameField(Window *window)
+  + void RenderPauseMenu(Window *window)
+
+  + void InitPauseMenu()
+  + void InitTanks()
+  + void InitGameField()
+  + void InitHealthBars()
+}
+
+abstract Command {
+    # sf::Keyboard::Key key;
+
+    # Command(sf::Keyboard::Key key)
+
+    + void Execute(Tank *tank, float delta_time)
+
+    + sf::Keyboard::Key GetKey() const
+}
+class KeyAssignments {
+}
+class MoveUpCommand extends Command {
+    + MoveUpCommand(sf::Keyboard::Key key)
+
+    + void Execute(Tank *tank, float delta_time)
+}
+class MoveDownCommand extends Command {
+    + MoveDownCommand(sf::Keyboard::Key key)
+
+    + void Execute(Tank *tank, float delta_time)
+}
+class ShootCommand extends Command{
+    + ShootCommand(sf::Keyboard::Key key)
+
+    + void Execute(Tank *tank, float delta_time)
+}
+class SpinAntiClockwiseCommand extends Command {
+    + SpinAntiClockwiseCommand(sf::Keyboard::Key key)
+
+    + void Execute(Tank *tank, float delta_time)
+}
+class SpinClockwiseCommand extends Command {
+    + SpinClockwiseCommand(sf::Keyboard::Key key)
+
+    + void Execute(Tank *tank, float delta_time)
+}
+class MoveController {
+    {static} + void Processing(Tank *tank, float delta_time)
+}
+
+class SolidBody extends Object implements ICollided {
+    + bool IsCollide(const SolidBody *collided_object)
+    + bool IsCollide(const sf::FloatRect &collided_object)
+}
+
+class Object {
+  # sf::Image image
+  # sf::Texture texture
+  # sf::Sprite sprite
+
+  + Object(const sf::Image &image, const sf::Texture &texture, const sf::Sprite &sprite);
+  + Object()
+
+  + sf::Image &GetImage()
+  + sf::Texture &GetTexture()
+  + sf::Sprite &GetSprite()
+  + void SetImage(const sf::Image &image)
+  + void SetTexture(const sf::Texture &texture)
+  + void SetSprite(const sf::Sprite &sprite)
+
+  + sf::Image &GetLinkImage()
+  + sf::Texture &GetLinkTexture()
+  + sf::Sprite &GetLinkSprite()
+}
+
+class Field implements ICollided {
+  # std::unique_ptr<std::vector<std::vector<Object *>>> field_
+}
+class Obstacle extends SolidBody {
+    + Obstacle()
+    + void ActionOnCollision(SolidBody *collided_object)
+    + void ActionOnCollision(const sf::FloatRect &collided_object)
+}
+class BackGround implements Field, IRendered {
+  -std::unique_ptr<std::vector<std::vector<Object *>>> FillField();
+
+  + BackGround()
+  + void Render(sf::RenderWindow *render_window)
+  + bool IsCollide(const SolidBody *collided_object)
+  + bool IsCollide(const sf::FloatRect &collided_object)
+  + void ActionOnCollision(SolidBody *collided_object)
+  + void ActionOnCollision(const sf::FloatRect &collided_object)
+}
+
+class BackObstacles implements Field, IRendered {
+  - std::vector<std::pair<int, int>> filled_cells;
+
+  - sf::FloatRect float_rect
+
+  - std::unique_ptr<std::vector<std::vector<Object *>>> CreateObstacles();
+  - void RandomFill(unsigned int count);
+
+  + BackObstacles()
+
+  + const sf::FloatRect &GetFloatRect()
+
+  + void Render(sf::RenderWindow *render_window)
+  + bool IsCollide(const SolidBody *collided_object)
+  + void ActionOnCollision(SolidBody *collided_object)
+  + bool IsCollide(const sf::FloatRect &collided_object)
+  + void ActionOnCollision(const sf::FloatRect &collided_object)
+
+  + Obstacle *GetIndexCollide(const SolidBody *collided_object)
+  + Obstacle *GetIndexCollide(const sf::FloatRect &collided_object)
+}
+
+class GameField implements IRendered {
+    - BackGround *back_ground
+    - BackObstacles *back_obstacles
+
+    + GameField()
+
+    + void Render(sf::RenderWindow *render_window)
+
+    + BackGround *GetBackGround()
+    + BackObstacles *GetBackObstacles()
+}
+
+class Button extends IRendered {
+
+  + sf::RectangleShape *rectangle_shape
+  + sf::Text *text
+
+  + sf::Color idle_color
+  + sf::Color hover_color
+  + sf::Color active_color
+
+  + Subject *on_click
+  + Subject *on_hover
+  + Subject *on_active
+
+  + Button()
+
+  + void SetState(ButtonState state)
+  + ButtonState GetState()
+
+  + void SetUpRectangleShape()
+  + void SetUpText()
+  + void SetUpColors()
+  + void SetUpSubjects()
+
+  {static} ButtonBuilder CreateBuilder()
+
+  + void Render(sf::RenderWindow *render_window)
+  + void Update(const sf::Vector2i &mouse_position)
+
+  # ButtonState stаte
+}
+
+class HealthBar implements IObserver {
+  {static} const int count_health_
+  std::vector<Object *> bars_
+
+  + int index_current_sprite_
+
+  + void FillBars(const sf::Color &color, const sf::Vector2f &position)
+
+  + HealthBar(const sf::Color &color, const sf::Vector2f &position)
+
+  + void Update()
+  + void Render(sf::RenderWindow *render_window)
+}
+
+class Bullet extends SolidBody implements IMovable, ISpinnable, IRendered, IUpdatable {
+  # unsigned int damage_;
+  # float flight_speed_;
+  # bool is_launched_;
+
+  # sf::Vector2f direct_;
+
+  # Bullet(unsigned int damage, float flight_speed, const sf::Vector2f &direct)
+
+  + bool IsLaunched() const;
+  + unsigned int GetDamage() const;
+  + const sf::Vector2f &GetDirect() const;
+
+  + void SetIsLaunched(bool is_launched);
+}
+
+class SimpleBullet extends Bullet {
+      + void Move(const sf::Vector2f &direct, float delta_time) override;
+      + void Spin(float angle, float delta_time) override;
+
+      + SimpleBullet(const sf::Vector2f &start_launch,
+    			   float angel_launch,
+    			   const sf::Vector2f &direct);
+
+      + void Render(sf::RenderWindow *render_window) override;
+      + void Update(float delta_time) override;
+
+      + void ActionOnCollision(const sf::FloatRect &collided_object) override;
+      + void ActionOnCollision(SolidBody *collided_object) override;
+}
+
+class PauseMenu implements IRendered {
+  - float distance_between_buttons_ = 10;
+  - float left_margin_ = 10;
+  - float right_margin_ = 10;
+  - float up_margin_ = 10;
+  - float down_margin_ = 10;
+  - std::vector<Button *> buttons_;
+  - sf::Font *font_;
+  - sf::Vector2f position_
+
+  + on_resume;
+  + on_main_menu;
+  + on_unpause_;
+
+  + PauseMenu(const sf::Vector2f &position);
+
+  - void SetUpFont();
+  - void SetUpButtons();
+
+  + void RenderAllButtons(sf::RenderWindow *render_window)
+  + void UpdateAllButtons(const sf::Vector2i &mouse_position)
+  + void Render(sf::RenderWindow *render_window) override
+  + void Update(const sf::Vector2i &mouse_position);
+
+}
+
+class ButtonWithPressedText extends Button{
+  + void Render(sf::RenderWindow *render_window)
+  + void Update(const sf::Vector2i &mouse_position)
+}
+class Ground extends Object {
+    + Ground()
+}
+@enduml

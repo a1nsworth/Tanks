@@ -25,7 +25,7 @@ class BackObstacles : public Field, public IRendered
   BackObstacles();
   ~BackObstacles() override = default;
 
-  const sf::FloatRect &GetFloatRect() const;
+  [[nodiscard]] const sf::FloatRect &GetFloatRect() const;
 
   void Render(sf::RenderWindow *render_window) override;
   bool IsCollide(const SolidBody *collided_object) override;

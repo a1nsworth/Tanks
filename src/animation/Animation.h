@@ -19,7 +19,7 @@ class Animation : public IRendered, public IUpdatable
 
  public:
   explicit Animation(const float speed_animation) : speed_animation_(speed_animation) {}
-  virtual ~Animation() = default;
+  ~Animation() = default;
 };
 
 #endif //TANKS_SRC_ANIMATION_ANIMATION_H_

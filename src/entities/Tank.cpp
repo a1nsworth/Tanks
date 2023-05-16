@@ -13,7 +13,6 @@ void Tank::Render(sf::RenderWindow *const render_window)
 	render_window->draw(GetSprite());
   }
   animation_death_->Render(render_window);
-  RenderObservers(render_window);
 }
 void Tank::Update(const float delta_time)
 {
@@ -30,7 +29,9 @@ void Tank::Update(const float delta_time)
 Tank::Tank(const sf::Color color,
 		   const KeyAssignments key_assignments)
 	: color_(color),
-	  key_assignments_(new KeyAssignments(key_assignments)), animation_death_(new AnimationDeath(color_))
+	  key_assignments_(new KeyAssignments(key_assignments)),
+	  animation_death_(new AnimationDeath(color_)),
+	  on_getting_damage(Subject())
 {
   image_.loadFromFile(PATH_TILES);
   texture_.loadFromImage(image_);
@@ -164,7 +165,7 @@ void Tank::Hit(unsigned int damage)
   } else
 	health_ -= damage;
 
-  NotifyObservers();
+  on_getting_damage.Notify();
 }
 void Tank::DeleteBullet()
 {
@@ -178,27 +179,4 @@ bool Tank::IsAlive() const
 const float Tank::GetDuration() const
 {
   return duration_;
-}
-void Tank::RemoveObserver(IObserver *observer)
-{
-  on_getting_damage_observers_.erase(std::remove(on_getting_damage_observers_.begin(),
-												 on_getting_damage_observers_.end(), observer),
-									 on_getting_damage_observers_.end());
-}
-void Tank::AddObserver(IObserver *observer)
-{
-  on_getting_damage_observers_.push_back(observer);
-}
-void Tank::NotifyObservers()
-{
-  std::for_each(on_getting_damage_observers_.begin(),
-				on_getting_damage_observers_.end(),
-				[&](IObserver *observer) { observer->Update(); });
-}
-void Tank::RenderObservers(sf::RenderWindow *render_window)
-{
-  for (auto &observer : on_getting_damage_observers_)
-  {
-	observer->Render(render_window);
-  }
 }
