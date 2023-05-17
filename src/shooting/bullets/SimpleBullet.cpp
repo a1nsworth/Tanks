@@ -29,7 +29,8 @@ void SimpleBullet::Spin(const float angle, const float delta_time)
 }
 void SimpleBullet::Render(sf::RenderWindow *const render_window)
 {
-  render_window->draw(sprite_);
+  if (is_launched_)
+  	render_window->draw(sprite_);
 }
 void SimpleBullet::ActionOnCollision(const sf::FloatRect &collided_object) {}
 void SimpleBullet::ActionOnCollision(SolidBody *collided_object)

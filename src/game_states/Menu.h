@@ -9,20 +9,14 @@
 #include "../ui/button/ButtonBuilder.h"
 #include "../control/MenuMouseController.h"
 #include "../entities/Object.h"
+#include "../ui/menu/MainMenu.h"
 
 class Game;
 
 class Menu : public IApplicationState
 {
  private:
-  Object *background_;
-  Button *button_run_;
-
-  sf::Font *font_;
-
-  void SetUpBackground();
-
-  void SetUpButtonRun();
+  MainMenu *main_menu_;
 
  public:
   Menu();

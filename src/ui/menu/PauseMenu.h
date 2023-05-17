@@ -2,8 +2,8 @@
 // Created by Daniel on 12.05.2023.
 //
 
-#ifndef TANKS_SRC_UI_PAUSEMENU_H_
-#define TANKS_SRC_UI_PAUSEMENU_H_
+#ifndef TANKS_SRC_UI_MENU_PAUSEMENU_H_
+#define TANKS_SRC_UI_MENU_PAUSEMENU_H_
 
 #include "../button/ButtonBuilder.h"
 #include "../button/ButtonWithPressedText.h"
@@ -15,9 +15,7 @@ class PauseMenu : public IRendered
  private:
   float distance_between_buttons_ = 10;
   float left_margin_ = 10;
-  float right_margin_ = 10;
   float up_margin_ = 10;
-  float down_margin_ = 10;
 
   ButtonWithPressedText *resume_;
   ButtonWithPressedText *main_menu_;
@@ -42,4 +40,4 @@ class PauseMenu : public IRendered
 
 };
 
-#endif //TANKS_SRC_UI_PAUSEMENU_H_
+#endif //TANKS_SRC_UI_MENU_PAUSEMENU_H_
