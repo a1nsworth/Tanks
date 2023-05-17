@@ -17,7 +17,7 @@ class Command
  public:
   virtual void Execute(Tank *tank, float delta_time) = 0;
 
-  sf::Keyboard::Key GetKey() const;
+  [[nodiscard]] sf::Keyboard::Key GetKey() const;
 };
 
 #endif //TANKS_SRC_CONTROL_COMMAND_H_

@@ -3,12 +3,7 @@
 //
 
 #include "Button.h"
-#include "ButtonBuilder.h"
 
-ButtonBuilder *Button::CreateBuilder()
-{
-  return new ButtonBuilder();
-}
 void Button::Render(sf::RenderWindow *render_window)
 {
   render_window->draw(*rectangle_shape);

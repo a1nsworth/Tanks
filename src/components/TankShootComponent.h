@@ -16,7 +16,7 @@ class TankShootComponent : public IShootable, public IUpdatable, public IRendere
  private:
   std::unique_ptr<Bullet> bullet_ = nullptr;
   float duration_;
-  float time_last_shoot_;
+  float time_last_shoot_ = 0;
   sf::Clock clock_;
 
   sf::Color color_;

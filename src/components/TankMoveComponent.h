@@ -2,8 +2,8 @@
 // Created by Daniel on 16.05.2023.
 //
 
-#ifndef TANKS_SRC_ENTITIES_COMPONENTS_TANKMOVECOMPONENT_H_
-#define TANKS_SRC_ENTITIES_COMPONENTS_TANKMOVECOMPONENT_H_
+#ifndef TANKS_SRC_COMPONENTS_TANKMOVECOMPONENT_H_
+#define TANKS_SRC_COMPONENTS_TANKMOVECOMPONENT_H_
 
 #include <cmath>
 #include "../interfaces/IMovable.h"
@@ -32,4 +32,4 @@ class TankMoveComponent : public IMovable
   void SetMovementSpeed(float movement_speed);
 };
 
-#endif //TANKS_SRC_ENTITIES_COMPONENTS_TANKMOVECOMPONENT_H_
+#endif //TANKS_SRC_COMPONENTS_TANKMOVECOMPONENT_H_

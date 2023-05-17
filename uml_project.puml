@@ -1,6 +1,7 @@
 @startuml
 'https://plantuml.com/class-diagram
 
+
 enum ButtonState {
     IDLE,
     HOVER,
@@ -15,14 +16,8 @@ interface IRendered
 interface IShootable
 interface ISpinnable
 interface IUpdatable
-interface IUpdatableEvents
 interface IObservable
 interface IObserver
-
-abstract Command
-
-class Object
-class SolidBody
 
 class Window
 class MainWindow
@@ -33,19 +28,33 @@ class Menu
 
 class Tank
 class Bullet
-class SimpleBullet
 
-class KeyAssignments
+class SimpleBullet
+class SimpleBulletColorComponent
+
+class TankMoveComponent
+class TankSpinComponent
+class TankShootComponent
+class TankColorComponent
+
+class Animation
+class AnimationDeath
+
+
+class Object
+class SolidBody
+
+
 class MoveUpCommand
 class MoveDownCommand
 class ShootCommand
 class SpinAntiClockwiseCommand
 class SpinClockwiseCommand
-class MoveCommand
 class MoveController
 
+class KeyAssignments
+
 class Field
-class GameObstacles
 class BackGround
 class Obstacle
 class GameField
@@ -54,40 +63,59 @@ class Ground
 class Subject
 
 class Button
-class ButtonBuilder
 class ButtonWithPressedText
 
 class HealthBar
 
 class PauseMenu
+class MainMenu
 
 Application *-- IApplicationState
 Application *-- MainWindow
+
 Game *-- GameField
 Game *--"2" Tank
 Game *--"2" HealthBar
 Game *-- PauseMenu
 Game --> Application
 
+Menu *-- MainMenu
+Menu --> Application
+
+MainMenu *-- ButtonWithPressedText
+MainMenu *-- Object
+
+PauseMenu *--"3" ButtonWithPressedText
 
 Tank --> Subject
+Tank *-- KeyAssignments
+Tank *-- TankMoveComponent
+Tank *-- TankSpinComponent
+Tank *-- TankShootComponent
+Tank *-- TankColorComponent
+Tank *-- AnimationDeath
+
+Animation -->"N" Object
+
+TankShootComponent *-- Bullet
+TankShootComponent o-- TankMoveComponent
+
+SimpleBullet *-- SimpleBulletColorComponent
 
 HealthBar *-- "5" Object
 
-Tank *-- KeyAssignments
+MoveController --> Tank
+KeyAssignments *--"N" Command
+
+Command --> Tank
 
 Field *-- "N" Object
 
 Button --> ButtonState
-Button ..> ButtonBuilder
-ButtonBuilder *-- Button
-
 
 GameField *-- BackGround
 GameField *-- BackObstacles
 
-KeyAssignments *--"N" Command
-MoveController --> Tank
 
 interface IApplicationState {
     + void UpdateEvents(Application *application, float delta_time)
@@ -95,6 +123,10 @@ interface IApplicationState {
     + void Render(Application *application)
 }
 interface ICollided{
+  + bool IsCollide(const SolidBody *collided_object)
+  + void ActionOnCollision(SolidBody *collided_object)
+  + bool IsCollide(const sf::FloatRect &collided_object)
+  + void ActionOnCollision(const sf::FloatRect &collided_object)
 }
 interface IHitable {
     + void Hit(unsigned int damage)
@@ -114,16 +146,18 @@ interface ISpinnable {
 interface IUpdatable {
     + void Update(float delta_time)
 }
-interface IUpdatableEvents {
-    + void UpdateEvents(sf::RenderWindow *render_window, float delta_time)
-}
 interface IObservable {
     + void Add(IObserver *observer)
     + void Remove(IObserver *observer)
     + void Notify()
 }
 interface IObserver extends IRendered {
-    + void Update() = 0;
+    + void Update()
+}
+
+class SolidBody extends Object implements ICollided {
+  + bool IsCollide(const SolidBody *collided_object)
+  + bool IsCollide(const sf::FloatRect &collided_object)
 }
 
 class Window {
@@ -171,60 +205,16 @@ class Application {
   +void Run();
 }
 
-class Tank implements IUpdatable, IRendered, IMovable, IHitable, ISpinnable, IShootable {
-      - bool is_alive
-      - unsigned int base_health
-      - unsigned int health
-      - unsigned int lives
-      - sf::Color color
+class Menu implements IApplicationState {
+    - MainMenu *main_menu_;
 
-      - sf::Vector2f direct
-      - const float angel
-      - const float movement_speed
-      - const float split_speed
-      - float current_movement_speed
-      - float current_split_speed
+    + Menu();
 
-      - Bullet *bullet
-      - const float duration
-      - float time_last_shoot
-      - sf::Clock clock
-
-      - KeyAssignments *key_assignments
-      - AnimationDeath *animation_death
-
-      + Subject on_getting_damage
-
-      - void SetUpTextureRectByColor()
-      - void SetUpSettings()
-
-      + Tank(sf::Color color, KeyAssignments key_assignments)
-
-      - void Move(const sf::Vector2f &direct, float delta_time)
-      - void Spin(float angle, float delta_time)
-      - void UpdateDirect()
-
-      + bool IsAlive()
-      + Bullet *GetBullet()
-      + const float GetDuration()
-      + const sf::Vector2f &GetDirect()
-      + KeyAssignments *GetKeyAssignments()
-
-      + void Render(sf::RenderWindow *render_window)
-      + void Update(float delta_time)
-
-      + void MoveUp(float delta_time)
-      + void MoveDown(float delta_time)
-      + void SpinClockwise(float delta_time)
-      + void SpinAntiClockwise(float delta_time)
-      + void Shot(float delta_time)
-      + void DeleteBullet()
-
-      + void ActionOnCollision(SolidBody *collided_object)
-      + void ActionOnCollision(const sf::FloatRect &collided_object)
-
-      + void Hit(unsigned int damage)
+    + void Update(Application *application, float delta_time) override;
+    + void Render(Application *application) override;
+    + void UpdateEvents(Application *application, float delta_time) override;
 }
+
 class Game implements IApplicationState {
   - GameField *game_field;
 
@@ -258,6 +248,144 @@ class Game implements IApplicationState {
   + void InitHealthBars()
 }
 
+class TankMoveComponent implements IMovable {
+- sf::Sprite *sprite_;
+
+- sf::Vector2f direct_;
+- float movement_speed_;
+
+- void Move(const sf::Vector2f &direct, float delta_time) override;
++ TankMoveComponent(sf::Sprite *sprite, float movement_speed);
+
++ void UpdateDirect();
+
++ void MoveUp(float delta_time);
++ void MoveDown(float delta_time);
+
++  sf::Sprite *GetSprite() const;
++  const sf::Vector2f &GetDirect() const;
++  float GetMovementSpeed() const;
++ void SetMovementSpeed(float movement_speed);
+}
+class TankSpinComponent implements ISpinnable {
+  - sf::Sprite *sprite_;
+  - float angel_;
+
+  - void Spin(float angle, float delta_time) override;
+
+  + TankSpinComponent(sf::Sprite *sprite, float angel);
+
+  + void SpinClockwise(float delta_time);
+  + void SpinAntiClockwise(float delta_time);
+
+  + sf::Sprite *GetSprite() const;
+  + float GetAngle() const;
+  + void SetAngel(float angel);
+}
+class TankShootComponent implements IShootable, IUpdatable, IRendered{
+  - std::unique_ptr<Bullet> bullet_ = nullptr;
+  - float duration_;
+  - float time_last_shoot_;
+  - sf::Clock clock_;
+
+  - sf::Color color_;
+
+  - TankMoveComponent *move_component_;
+  + TankShootComponent(TankMoveComponent *move_component,
+							  const sf::Color &color,
+							  float duration = 2);
+
+  + const std::unique_ptr<Bullet> &GetBullet() const;
+  + float GetDuration() const;
+  + float GetTimeLastShoot() const;
+  + const sf::Clock &GetClock() const;
+
+  + void Shot(float delta) override;
+  + void DeleteBullet();
+
+  + void Render(sf::RenderWindow *render_window) override;
+  + void Update(float delta_time) override;
+}
+class TankColorComponent {
+    + void SetColor(sf::Sprite *sprite, const sf::Color &color);
+}
+class SimpleBulletColorComponent {
+    + void SetColor(sf::Sprite *sprite, const sf::Color &color);
+}
+
+class Animation implements IRendered, IUpdatable{
+ # float speed_animation_;
+ # std::vector<Object *> animations_;
+
+ + Animation(const float speed_animation) : speed_animation_(speed_animation) {}
+}
+
+class AnimationDeath extends Animation implements IMovable {
+  - const float step_scale_size_ = 0.001;
+
+  - float movement_speed_y_ = 50;
+  - const int count_animations_ = 100;
+
+  - bool is_finished_;
+  - bool is_started_;
+
+  - Object *CreateObject(const sf::Color &color);
+
+  - void Move(const sf::Vector2f &direct, float delta_time) override;
+  - void MoveUp(float delta_time);
+
+  + AnimationDeath(const sf::Color &color);
+
+  + bool IsFinished() const;
+  + bool IsStarted() const;
+
+  + void Run(const sf::Vector2f &appearance_position);
+
+  + void Render(sf::RenderWindow *render_window) override;
+  + void Update(float delta_time) override;
+}
+
+class Tank implements SolidBody, IRendered, IUpdatable, IHitable, IShootable {
+        - TankMoveComponent *move_component_;
+        - TankSpinComponent *spin_component_;
+        - TankShootComponent *shoot_component_;
+        - TankColorComponent color_component_;
+
+        - bool is_alive_;
+        - unsigned int health_;
+        - sf::Color color_;
+
+        - KeyAssignments *key_assignments_;
+
+        - AnimationDeath *animation_death_;
+
+        - void SetUpComponents(const sf::Color &color);
+        - void SetUpSettings();
+
+        + Subject on_getting_damage;
+
+        + Tank(sf::Color color, KeyAssignments key_assignments);
+
+        + bool IsAlive()
+        + Bullet *GetBullet()
+        + KeyAssignments *GetKeyAssignments()
+
+        + void Render(sf::RenderWindow *render_window)
+        + void Update(float delta_time)
+
+        + void MoveUp(float delta_time)
+        + void MoveDown(float delta_time)
+        + void SpinClockwise(float delta_time)
+        + void SpinAntiClockwise(float delta_time)
+        + void Shot(float delta_time) override
+        + void DeleteBullet()
+
+        + void ActionOnCollision(SolidBody *collided_object)
+        + void ActionOnCollision(const sf::FloatRect &collided_object)
+
+        + void Hit(unsigned int damage) override;
+}
+
 abstract Command {
     # sf::Keyboard::Key key;
 
@@ -268,6 +396,34 @@ abstract Command {
     + sf::Keyboard::Key GetKey() const
 }
 class KeyAssignments {
+  - Command *move_up_;
+  - Command *move_down_;
+  - Command *spin_clockwise_;
+  - Command *spin_anti_clockwise_;
+  - Command *shot_;
+
+  + KeyAssignments(sf::Keyboard::Key move_up,
+				 sf::Keyboard::Key move_down,
+				 sf::Keyboard::Key spin_clockwise,
+				 sf::Keyboard::Key spin_anti_clockwise,
+				 sf::Keyboard::Key shot);
+
+  + Command *GetMoveDown() const;
+  + void SetMoveDown(Command *move_down);
+
+  + Command *GetMoveUp() const;
+  + void SetMoveUp(Command *move_up);
+
+  + Command *GetSpinClockwise() const;
+  + void SetSpinClockwise(Command *spin_clockwise);
+
+  + Command *GetSpinAntiClockwise() const;
+  + void SetSpinAntiClockwise(Command *spin_anti_clockwise);
+
+  + Command *GetShot() const;
+  + void SetShot(Command *shot);
+
+  + Command *GetCommandByKey(sf::Keyboard::Key key);
 }
 class MoveUpCommand extends Command {
     + MoveUpCommand(sf::Keyboard::Key key)
@@ -321,6 +477,10 @@ class Object {
   + sf::Image &GetLinkImage()
   + sf::Texture &GetLinkTexture()
   + sf::Sprite &GetLinkSprite()
+}
+
+class Ground extends Object {
+    + Ground()
 }
 
 class Field implements ICollided {
@@ -481,8 +641,5 @@ class PauseMenu implements IRendered {
 class ButtonWithPressedText extends Button{
   + void Render(sf::RenderWindow *render_window)
   + void Update(const sf::Vector2i &mouse_position)
-}
-class Ground extends Object {
-    + Ground()
 }
 @enduml

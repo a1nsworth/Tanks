@@ -5,10 +5,8 @@
 #ifndef TANKS_SRC_UI_MENU_PAUSEMENU_H_
 #define TANKS_SRC_UI_MENU_PAUSEMENU_H_
 
-#include "../button/ButtonBuilder.h"
 #include "../button/ButtonWithPressedText.h"
 #include "../../application/ApplicationConstants.h"
-#include "../../event_system/Event.h"
 
 class PauseMenu : public IRendered
 {

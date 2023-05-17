@@ -25,7 +25,7 @@ class Application
 
   void UpdateDeltaTime();
 
-  void InitMainWindow();
+  void SetUpMainWindow();
  public:
   MainWindow *GetWindow();
   IApplicationState *GetState() const;

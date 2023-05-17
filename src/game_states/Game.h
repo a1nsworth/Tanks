@@ -16,7 +16,6 @@
 class Game : public IApplicationState
 {
  private:
-
   GameField *game_field_;
 
   Tank *tank_1_;
@@ -46,7 +45,7 @@ class Game : public IApplicationState
   Game();
   ~Game() = default;
 
-  bool IsPaused() const;
+  [[nodiscard]] bool IsPaused() const;
   void SetIsPaused(bool is_paused);
 
   void Update(Application *application, float delta_time) override;

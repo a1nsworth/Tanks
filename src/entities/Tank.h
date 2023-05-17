@@ -36,8 +36,6 @@ class Tank
   unsigned int health_ = 4;
   sf::Color color_;
 
-  sf::Clock clock_;
-
   KeyAssignments *key_assignments_;
 
   AnimationDeath *animation_death_;

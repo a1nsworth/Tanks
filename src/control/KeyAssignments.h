@@ -26,22 +26,22 @@ class KeyAssignments
 				 sf::Keyboard::Key shot);
   ~KeyAssignments() = default;
 
-  Command *GetMoveDown() const;
+  [[nodiscard]] Command *GetMoveDown() const;
   void SetMoveDown(Command *move_down);
 
-  Command *GetMoveUp() const;
+  [[nodiscard]] Command *GetMoveUp() const;
   void SetMoveUp(Command *move_up);
 
-  Command *GetSpinClockwise() const;
+  [[nodiscard]] Command *GetSpinClockwise() const;
   void SetSpinClockwise(Command *spin_clockwise);
 
-  Command *GetSpinAntiClockwise() const;
+  [[nodiscard]] Command *GetSpinAntiClockwise() const;
   void SetSpinAntiClockwise(Command *spin_anti_clockwise);
 
-  Command *GetShot() const;
+  [[nodiscard]] Command *GetShot() const;
   void SetShot(Command *shot);
 
-  Command *GetCommandByKey(sf::Keyboard::Key key);
+  [[nodiscard]] Command *GetCommandByKey(sf::Keyboard::Key key);
 };
 
 #endif //TANKS_SRC_CONTROL_KEYASSIGNMENTS_H_

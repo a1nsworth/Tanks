@@ -18,7 +18,7 @@ class Animation : public IRendered, public IUpdatable
   std::vector<Object *> animations_;
 
  public:
-  explicit Animation(const float speed_animation) : speed_animation_(speed_animation) {}
+  explicit Animation(float speed_animation);
   ~Animation() = default;
 };
 
