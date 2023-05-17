@@ -39,20 +39,9 @@ class Game : public IApplicationState
   void InitGameField();
   void InitHealthBars();
 
-  void OnClickedResume()
-  {
-	is_paused_ = false;
-  }
-
-  void OnClickedMainMenu(Application *application)
-  {
-	//application->SetState(new Menu());
-  }
-
-  void OnClickedNewGame(Application *application)
-  {
-	//application->SetState(new Game());
-  }
+  void OnClickedResume();
+  void OnClickedMainMenu(Application *application);
+  void OnClickedNewGame(Application *application);
  public:
   Game();
   ~Game() = default;
