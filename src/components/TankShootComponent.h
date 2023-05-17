@@ -19,9 +19,13 @@ class TankShootComponent : public IShootable, public IUpdatable, public IRendere
   float time_last_shoot_;
   sf::Clock clock_;
 
+  sf::Color color_;
+
   TankMoveComponent *move_component_;
  public:
-  explicit TankShootComponent(TankMoveComponent *move_component, float duration = 2);
+  explicit TankShootComponent(TankMoveComponent *move_component,
+							  const sf::Color &color,
+							  float duration = 2);
   ~TankShootComponent() = default;
 
   [[nodiscard]] const std::unique_ptr<Bullet> &GetBullet() const;
