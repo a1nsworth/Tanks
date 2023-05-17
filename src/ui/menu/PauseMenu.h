@@ -26,12 +26,12 @@ class PauseMenu : public IRendered
   void SetUpFont();
   void SetUpButtons();
  public:
+  explicit PauseMenu(const sf::Vector2f &position);
+  ~PauseMenu() = default;
+
   [[nodiscard]] Button *GetResume() const;
   [[nodiscard]] Button *GetMainMenu() const;
   [[nodiscard]] Button *GetNewGame() const;
-
-  explicit PauseMenu(const sf::Vector2f &position);
-  ~PauseMenu() = default;
 
   void RenderAllButtons(sf::RenderWindow *render_window);
   void UpdateAllButtons(const sf::Vector2i &mouse_position);

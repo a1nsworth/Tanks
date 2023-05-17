@@ -11,19 +11,7 @@ void Game::Update(Application *application, float delta_time)
   } else
   {
 	pause_menu_->Update(sf::Mouse::getPosition(*application->GetWindow()->GetRenderWindow()));
-
-	if (pause_menu_->GetMainMenu()->GetState() == Button::State::ACTIVE)
-	{
-	  OnClickedMainMenu(application);
-	} else if (pause_menu_->GetNewGame()->GetState() == Button::State::ACTIVE)
-	{
-	  OnClickedNewGame(application);
-	} else if (pause_menu_->GetResume()->GetState() == Button::State::ACTIVE)
-	{
-	  OnClickedResume();
-	}
   }
-  UpdateEvents(application, delta_time);
 }
 void Game::Render(Application *application)
 {
@@ -50,6 +38,17 @@ void Game::UpdateEvents(Application *application, const float delta_time)
 		is_paused_ = !is_paused_;
 	  }
 	}
+  }
+
+  if (pause_menu_->GetMainMenu()->GetState() == Button::State::ACTIVE)
+  {
+	OnClickedMainMenu(application);
+  } else if (pause_menu_->GetNewGame()->GetState() == Button::State::ACTIVE)
+  {
+	OnClickedNewGame(application);
+  } else if (pause_menu_->GetResume()->GetState() == Button::State::ACTIVE)
+  {
+	OnClickedResume();
   }
 
 #pragma region Обработка нажатий клавиш
@@ -165,10 +164,23 @@ void Game::RenderHealthBars(Window *window)
 }
 void Game::InitPauseMenu()
 {
-  pause_menu_ = new PauseMenu(sf::Vector2f(game_field_->GetBackObstacles()->GetFloatRect().width / 2., game_field_->GetBackObstacles()->GetFloatRect().height / 2.));
+  pause_menu_ = new PauseMenu(sf::Vector2f(game_field_->GetBackObstacles()->GetFloatRect().width / 2.,
+										   game_field_->GetBackObstacles()->GetFloatRect().height / 2.));
 }
 void Game::RenderPauseMenu(Window *window)
 {
   if (is_paused_)
 	pause_menu_->Render(window->GetRenderWindow());
+}
+void Game::OnClickedMainMenu(Application *application)
+{
+  application->SetState(new Menu());
+}
+void Game::OnClickedNewGame(Application *application)
+{
+  application->SetState(new Game());
+}
+void Game::OnClickedResume()
+{
+  is_paused_ = false;
 }
