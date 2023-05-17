@@ -5,8 +5,6 @@
 #ifndef TANKS_SRC_TODO_H_
 #define TANKS_SRC_TODO_H_
 
-//TODO Сделать отдельный класс MainMenuUI
-//TODO Декомпозировать танк
 //TODO Наследование от Drawable
 //TODO Init SetUp
 //TODO Убрать ButtonBuilder

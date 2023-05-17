@@ -142,6 +142,6 @@ void Tank::SetUpComponents(const sf::Color &color)
 {
   move_component_ = new TankMoveComponent(&sprite_, 100000);
   spin_component_ = new TankSpinComponent(&sprite_, 200000);
-  shoot_component_ = new TankShootComponent(move_component_);
   color_component_.SetColor(&sprite_, color);
+  shoot_component_ = new TankShootComponent(move_component_, color);
 }
