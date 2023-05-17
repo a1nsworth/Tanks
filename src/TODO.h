@@ -10,5 +10,6 @@
 //TODO Наследование от Drawable
 //TODO Init SetUp
 //TODO Убрать ButtonBuilder
+//TODO Fix отсутсвие анимации при смерти красного
 
 #endif //TANKS_SRC_TODO_H_

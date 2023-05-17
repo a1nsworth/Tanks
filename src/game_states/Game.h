@@ -46,12 +46,12 @@ class Game : public IApplicationState
 
   void OnClickedMainMenu(Application *application)
   {
-	application->SetState(new Menu());
+	//application->SetState(new Menu());
   }
 
   void OnClickedNewGame(Application *application)
   {
-	application->SetState(new Game());
+	//application->SetState(new Game());
   }
  public:
   Game();

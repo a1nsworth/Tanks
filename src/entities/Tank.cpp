@@ -8,21 +8,17 @@ void Tank::Render(sf::RenderWindow *const render_window)
 {
   if (is_alive_)
   {
-	if (bullet_ != nullptr && bullet_->IsLaunched())
-	  bullet_->Render(render_window);
 	render_window->draw(GetSprite());
+	shoot_component_->Render(render_window);
   }
   animation_death_->Render(render_window);
 }
 void Tank::Update(const float delta_time)
 {
-  current_movement_speed_ = movement_speed_;
-  current_split_speed_ = split_speed_;
   if (is_alive_)
   {
-	UpdateDirect();
-	if (bullet_ != nullptr)
-	  bullet_->Update(delta_time);
+	move_component_->UpdateDirect();
+	shoot_component_->Update(delta_time);
   }
   animation_death_->Update(delta_time);
 }
@@ -37,50 +33,29 @@ Tank::Tank(const sf::Color color,
   texture_.loadFromImage(image_);
   sprite_.setTexture(texture_);
 
-  SetUpTextureRectByColor();
   SetUpSettings();
-}
-// Отдельный компонент
-void Tank::SetUpTextureRectByColor()
-{
-  if (color_ == sf::Color::Red)
-	sprite_.setTextureRect(sf::IntRect(250, 705, WIDTH_TANK, HEIGHT_TANK));
-  else if (color_ == sf::Color::Yellow)
-	sprite_.setTextureRect(sf::IntRect(250, 600, WIDTH_TANK, HEIGHT_TANK));
+  SetUpComponents(color_);
 }
 void Tank::SetUpSettings()
 {
   sprite_.setScale(1, 1);
   sprite_.setOrigin(WIDTH_TANK / 2., HEIGHT_TANK / 2.);
 }
-void Tank::UpdateDirect()
-{
-  const auto kAngel = (sprite_.getRotation()) * M_PI / 180;
-  direct_ = sf::Vector2f(sin(kAngel), cos(kAngel));
-}
-void Tank::Move(const sf::Vector2f &direct, const float delta_time)
-{
-  sprite_.move(direct * delta_time * current_movement_speed_);
-}
 void Tank::MoveUp(const float delta_time)
 {
-  Move(sf::Vector2f(direct_.x, -direct_.y), delta_time);
+  move_component_->MoveUp(delta_time);
 }
 void Tank::MoveDown(const float delta_time)
 {
-  Move(sf::Vector2f(-direct_.x, direct_.y), delta_time);
-}
-void Tank::Spin(const float angle, const float delta_time)
-{
-  sprite_.rotate(angle * delta_time * current_split_speed_);
+  move_component_->MoveDown(delta_time);
 }
 void Tank::SpinClockwise(const float delta_time)
 {
-  Spin(-angel_, delta_time);
+  spin_component_->SpinClockwise(delta_time);
 }
 void Tank::SpinAntiClockwise(const float delta_time)
 {
-  Spin(angel_, delta_time);
+  spin_component_->SpinAntiClockwise(delta_time);
 }
 KeyAssignments *Tank::GetKeyAssignments() const
 {
@@ -139,22 +114,11 @@ void Tank::ActionOnCollision(const sf::FloatRect &collided_object)
 }
 void Tank::Shot(const float delta_time)
 {
-  if (auto now = clock_.getElapsedTime().asSeconds(); time_last_shoot_ == 0 || now - time_last_shoot_ >= duration_)
-  {
-	time_last_shoot_ = now;
-
-	bullet_ = new SimpleBullet(sprite_.getPosition(),
-							   sprite_.getRotation(), sf::Vector2f(direct_.x, -direct_.y));
-	bullet_->SetIsLaunched(true);
-  }
+  shoot_component_->Shot(delta_time);
 }
 Bullet *Tank::GetBullet() const
 {
-  return bullet_;
-}
-const sf::Vector2f &Tank::GetDirect() const
-{
-  return direct_;
+  return shoot_component_->GetBullet().get();
 }
 void Tank::Hit(unsigned int damage)
 {
@@ -164,19 +128,20 @@ void Tank::Hit(unsigned int damage)
 	animation_death_->Run(sf::Vector2f(sprite_.getGlobalBounds().left, sprite_.getGlobalBounds().top));
   } else
 	health_ -= damage;
-
   on_getting_damage.Notify();
 }
 void Tank::DeleteBullet()
 {
-  delete bullet_;
-  bullet_ = nullptr;
+  shoot_component_->DeleteBullet();
 }
 bool Tank::IsAlive() const
 {
   return is_alive_;
 }
-const float Tank::GetDuration() const
+void Tank::SetUpComponents(const sf::Color &color)
 {
-  return duration_;
+  move_component_ = new TankMoveComponent(&sprite_, 100000);
+  spin_component_ = new TankSpinComponent(&sprite_, 200000);
+  shoot_component_ = new TankShootComponent(move_component_);
+  color_component_.SetColor(&sprite_, color);
 }
