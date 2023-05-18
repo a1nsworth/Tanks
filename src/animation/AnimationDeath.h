@@ -37,8 +37,8 @@ class AnimationDeath : public Animation, public IMovable
   explicit AnimationDeath(const sf::Color &color);
   ~AnimationDeath()  = default;
 
-  bool IsFinished() const;
-  bool IsStarted() const;
+  [[nodiscard]] bool IsFinished() const;
+  [[nodiscard]] bool IsStarted() const;
 
   void Run(const sf::Vector2f &appearance_position);
 

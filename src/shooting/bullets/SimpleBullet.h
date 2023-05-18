@@ -22,7 +22,7 @@ class SimpleBullet : public Bullet
   void Spin(float angle, float delta_time) override;
  public:
   SimpleBullet(const sf::Vector2f &start_launch,
-			   const float angel_launch,
+			   float angel_launch,
 			   const sf::Vector2f &direct,
 			   const sf::Color &color);
   ~SimpleBullet() override = default;

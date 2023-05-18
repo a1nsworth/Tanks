@@ -2,8 +2,8 @@
 // Created by Daniel on 04.05.2023.
 //
 
-#ifndef TANKS_SRC_SHOOTING_BULLET_H_
-#define TANKS_SRC_SHOOTING_BULLET_H_
+#ifndef TANKS_SRC_SHOOTING_BULLETS_BULLET_H_
+#define TANKS_SRC_SHOOTING_BULLETS_BULLET_H_
 
 #include "../../entities/SolidBody.h"
 #include "../../interfaces/IMovable.h"
@@ -21,15 +21,14 @@ class Bullet : public SolidBody, public IMovable, public ISpinnable, public IRen
   sf::Vector2f direct_;
 
   explicit Bullet(unsigned int damage, float flight_speed, const sf::Vector2f &direct);
-
  public:
   ~Bullet() override = default;
 
-  bool IsLaunched() const;
-  unsigned int GetDamage() const;
-  const sf::Vector2f &GetDirect() const;
+  [[nodiscard]] bool IsLaunched() const;
+  [[nodiscard]] unsigned int GetDamage() const;
+  [[nodiscard]] const sf::Vector2f &GetDirect() const;
 
   void SetIsLaunched(bool is_launched);
 };
 
-#endif //TANKS_SRC_SHOOTING_BULLET_H_
+#endif //TANKS_SRC_SHOOTING_BULLETS_BULLET_H_

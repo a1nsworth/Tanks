@@ -3,3 +3,4 @@
 //
 
 #include "Animation.h"
+Animation::Animation(const float speed_animation) : speed_animation_(speed_animation) {}

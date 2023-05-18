@@ -12,8 +12,6 @@
 #include "../../subject/Subject.h"
 #include "../../interfaces/IRendered.h"
 
-class ButtonBuilder;
-
 class Button : public IRendered
 {
  public:
@@ -45,8 +43,6 @@ class Button : public IRendered
   void SetUpText();
   void SetUpColors();
   void SetUpSubjects();
-
-  static ButtonBuilder *CreateBuilder();
 
   void Render(sf::RenderWindow *render_window) override;
   virtual void Update(const sf::Vector2i &mouse_position);

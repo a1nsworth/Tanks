@@ -20,6 +20,7 @@ class BackObstacles : public Field, public IRendered
 											HEIGHT_MAIN_WINDOW - (HEIGHT_GROUND << 1));
 
   std::unique_ptr<std::vector<std::vector<Object *>>> CreateObstacles();
+
   void RandomFill(unsigned int count);
  public:
   BackObstacles();

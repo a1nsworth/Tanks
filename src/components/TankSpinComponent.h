@@ -2,8 +2,8 @@
 // Created by Daniel on 16.05.2023.
 //
 
-#ifndef TANKS_SRC_ENTITIES_COMPONENTS_TANKSPINCOMPONENT_H_
-#define TANKS_SRC_ENTITIES_COMPONENTS_TANKSPINCOMPONENT_H_
+#ifndef TANKS_SRC_COMPONENTS_TANKSPINCOMPONENT_H_
+#define TANKS_SRC_COMPONENTS_TANKSPINCOMPONENT_H_
 
 #include <SFML/Graphics.hpp>
 #include "../interfaces/ISpinnable.h"
@@ -16,7 +16,7 @@ class TankSpinComponent : public ISpinnable
 
   void Spin(float angle, float delta_time) override;
  public:
-  TankSpinComponent(sf::Sprite *const sprite, float angel);
+  TankSpinComponent(sf::Sprite *sprite, float angel);
   ~TankSpinComponent() = default;
 
   void SpinClockwise(float delta_time);
@@ -27,4 +27,4 @@ class TankSpinComponent : public ISpinnable
   void SetAngel(float angel);
 };
 
-#endif //TANKS_SRC_ENTITIES_COMPONENTS_TANKSPINCOMPONENT_H_
+#endif //TANKS_SRC_COMPONENTS_TANKSPINCOMPONENT_H_

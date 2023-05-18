@@ -6,14 +6,14 @@
 
 Application::Application()
 {
-  InitMainWindow();
+  SetUpMainWindow();
   state_ = new Menu();
 }
 void Application::UpdateDeltaTime()
 {
   delta_time_ = delta_clock_.restart().asSeconds() / TICK;
 }
-void Application::InitMainWindow()
+void Application::SetUpMainWindow()
 {
   main_window_ = new MainWindow(FPS, true);
 }

@@ -61,18 +61,19 @@ void Game::UpdateEvents(Application *application, const float delta_time)
 }
 void Game::UpdateTanks(const float delta_time)
 {
+
   tank_1_->Update(delta_time);
 
   // Коллизия с картой
   if (const auto kObstacle = game_field_->GetBackObstacles()->GetIndexCollide(tank_1_); kObstacle != nullptr)
   {
-	tank_1_->ActionOnCollision(kObstacle);
+	//tank_1_->ActionOnCollision(kObstacle);
   }
   if (const auto kBullet = tank_1_->GetBullet(); kBullet != nullptr && kBullet->IsLaunched())
   {
 	// Коллизия пули со стеной
 	// Коллизия пули с врагом
-	if (tank_2_->IsAlive() && kBullet->IsCollide(tank_2_) || game_field_->GetBackObstacles()->IsCollide(kBullet))
+	if ((tank_2_->IsAlive() && kBullet->IsCollide(tank_2_)) || game_field_->GetBackObstacles()->IsCollide(kBullet))
 	{
 	  if (tank_2_->IsAlive() && kBullet->IsCollide(tank_2_))
 		kBullet->ActionOnCollision(tank_2_);
@@ -85,13 +86,13 @@ void Game::UpdateTanks(const float delta_time)
   // Коллизия с картой
   if (const auto kObstacle = game_field_->GetBackObstacles()->GetIndexCollide(tank_2_); kObstacle != nullptr)
   {
-	tank_2_->ActionOnCollision(kObstacle);
+	//tank_2_->ActionOnCollision(kObstacle);
   }
   if (const auto kBullet = tank_2_->GetBullet(); kBullet != nullptr && kBullet->IsLaunched())
   {
 	// Коллизия пули со стеной
 	// Коллизия пули с врагом
-	if (tank_2_->IsAlive() && kBullet->IsCollide(tank_1_) || game_field_->GetBackObstacles()->IsCollide(kBullet))
+	if ((tank_1_->IsAlive() && kBullet->IsCollide(tank_1_)) || game_field_->GetBackObstacles()->IsCollide(kBullet))
 	{
 	  if (tank_1_->IsAlive() && kBullet->IsCollide(tank_1_))
 		kBullet->ActionOnCollision(tank_1_);
