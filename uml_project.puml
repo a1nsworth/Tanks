@@ -8,113 +8,104 @@ enum ButtonState {
     ACTIVE
 }
 
-interface IApplicationState
-interface ICollided
-interface IHitable
-interface IMovable
-interface IRendered
-interface IShootable
-interface ISpinnable
-interface IUpdatable
-interface IObservable
-interface IObserver
+'class Window
+'class MainWindow
+'
+'class Application
+'class Game
+'class Menu
+'
+'class Tank
+'class Bullet
+'
+'class SimpleBullet
+'class SimpleBulletColorComponent
+'
+'class TankMoveComponent
+'class TankSpinComponent
+'class TankShootComponent
+'class TankColorComponent
+'
+'class Animation
+'class AnimationDeath
+'
+'
+'class Object
+'class SolidBody
+'
+'
+'class MoveUpCommand
+'class MoveDownCommand
+'class ShootCommand
+'class SpinAntiClockwiseCommand
+'class SpinClockwiseCommand
+'class MoveController
+'
+'class KeyAssignments
+'
+'class Field
+'class BackGround
+'class Obstacle
+'class GameField
+'class Ground
+'
+'class Subject
+'
+'class Button
+'class ButtonWithPressedText
+'
+'class HealthBar
+'
+'class PauseMenu
+'class MainMenu
 
-class Window
-class MainWindow
+Application *---- IApplicationState
+Application *---- MainWindow
 
-class Application
-class Game
-class Menu
+Game *---- GameField
+Game *----"2" Tank
+Game *----"2" HealthBar
+Game *---- PauseMenu
+Game ----> Application
+Game ----> "2" MoveController : "Управление танками"
 
-class Tank
-class Bullet
+Menu *---- MainMenu
+Menu ----> Application
 
-class SimpleBullet
-class SimpleBulletColorComponent
+MainMenu *---- ButtonWithPressedText
+MainMenu *---- Object
 
-class TankMoveComponent
-class TankSpinComponent
-class TankShootComponent
-class TankColorComponent
+PauseMenu *----"3" ButtonWithPressedText
 
-class Animation
-class AnimationDeath
+Subject o---- IObserver
+Tank ----> Subject
+Tank *---- KeyAssignments
+Tank *---- TankMoveComponent
+Tank *---- TankSpinComponent
+Tank *---- TankShootComponent
+Tank *---- TankColorComponent
+Tank *---- AnimationDeath
 
+Animation ---->"N" Object
 
-class Object
-class SolidBody
+TankShootComponent *---- Bullet
+TankShootComponent o---- TankMoveComponent
 
+SimpleBullet *---- SimpleBulletColorComponent
 
-class MoveUpCommand
-class MoveDownCommand
-class ShootCommand
-class SpinAntiClockwiseCommand
-class SpinClockwiseCommand
-class MoveController
+HealthBar *---- "5" Object
 
-class KeyAssignments
+MoveController ----> Tank
+KeyAssignments *----"N" Command
 
-class Field
-class BackGround
-class Obstacle
-class GameField
-class Ground
+Command ----> Tank
 
-class Subject
+Field *---- "N" Object
 
-class Button
-class ButtonWithPressedText
+Button ----> ButtonState
 
-class HealthBar
-
-class PauseMenu
-class MainMenu
-
-Application *-- IApplicationState
-Application *-- MainWindow
-
-Game *-- GameField
-Game *--"2" Tank
-Game *--"2" HealthBar
-Game *-- PauseMenu
-Game --> Application
-
-Menu *-- MainMenu
-Menu --> Application
-
-MainMenu *-- ButtonWithPressedText
-MainMenu *-- Object
-
-PauseMenu *--"3" ButtonWithPressedText
-
-Tank --> Subject
-Tank *-- KeyAssignments
-Tank *-- TankMoveComponent
-Tank *-- TankSpinComponent
-Tank *-- TankShootComponent
-Tank *-- TankColorComponent
-Tank *-- AnimationDeath
-
-Animation -->"N" Object
-
-TankShootComponent *-- Bullet
-TankShootComponent o-- TankMoveComponent
-
-SimpleBullet *-- SimpleBulletColorComponent
-
-HealthBar *-- "5" Object
-
-MoveController --> Tank
-KeyAssignments *--"N" Command
-
-Command --> Tank
-
-Field *-- "N" Object
-
-Button --> ButtonState
-
-GameField *-- BackGround
-GameField *-- BackObstacles
+GameField *---- BackGround
+GameField *---- BackObstacles
 
 
 interface IApplicationState {
@@ -205,6 +196,27 @@ class Application {
   +void Run();
 }
 
+class MainMenu implements IRendered{
+      - sf::Font *font_;
+    
+      - sf::Text *title_;
+      - Object *background_;
+      - ButtonWithPressedText *run_game_;
+    
+      - void SetUpButtons();
+      - void SetUpBackGround();
+      - void SetUpFont();
+      
+      + MainMenu();
+    
+      + sf::Font *GetFont() const;
+      + sf::Text *GetTitle() const;
+      + Object *GetBackground() const;
+      + ButtonWithPressedText *GetRunGame() const;
+    
+      + void Render(sf::RenderWindow *render_window) override;
+      + void Update(const sf::Vector2i &mouse_position);
+}
 class Menu implements IApplicationState {
     - MainMenu *main_menu_;
 
@@ -454,11 +466,6 @@ class MoveController {
     {static} + void Processing(Tank *tank, float delta_time)
 }
 
-class SolidBody extends Object implements ICollided {
-    + bool IsCollide(const SolidBody *collided_object)
-    + bool IsCollide(const sf::FloatRect &collided_object)
-}
-
 class Object {
   # sf::Image image
   # sf::Texture texture
@@ -537,6 +544,7 @@ class GameField implements IRendered {
 }
 
 class Button extends IRendered {
+  # ButtonState stаte
 
   + sf::RectangleShape *rectangle_shape
   + sf::Text *text
@@ -559,12 +567,9 @@ class Button extends IRendered {
   + void SetUpColors()
   + void SetUpSubjects()
 
-  {static} ButtonBuilder CreateBuilder()
-
   + void Render(sf::RenderWindow *render_window)
   + void Update(const sf::Vector2i &mouse_position)
 
-  # ButtonState stаte
 }
 
 class HealthBar implements IObserver {
