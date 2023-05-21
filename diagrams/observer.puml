@@ -1,0 +1,44 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+interface IObserver
+interface IObservable
+
+class Subject
+class Tank
+class HealthBar
+
+Subject --> IObserver
+Tank *-- Subject
+HealthBar --> Tank : "Подписывается на событие"
+
+interface IObserver {
+    + Update()
+    + Render(render_window: RenderWindow)
+}
+
+interface IObservable {
+    + void Add(observer: IObserver )
+    + void Remove(observer: IObserver)
+    + void Notify()
+}
+
+class Subject implements IObservable {
+  - observers : IObserver[];
+
+  + Subject();
+
+  + void Add(observer: IObserver )
+      + void Remove(observer: IObserver)
+      + void Notify()
+}
+
+class Tank {
+    + on_getting_damage : Subject
+    + Hit(damage: unsigned int)
+}
+
+class HealthBar implements IObserver {
+    + Update()
+}
+@enduml

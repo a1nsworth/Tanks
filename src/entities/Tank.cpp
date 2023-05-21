@@ -2,7 +2,6 @@
 // Created by Daniel on 30.04.2023.
 //
 
-#include <iostream>
 #include "Tank.h"
 void Tank::Render(sf::RenderWindow *const render_window)
 {

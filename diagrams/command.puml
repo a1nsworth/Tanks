@@ -1,0 +1,71 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract Command
+
+class MoveDownCommand
+class MoveUpCommand
+class SpinAntiClockwiseCommand
+class SpinClockwiseCommand
+class ShootCommand
+class KeyAssignments
+class MoveController
+class Tank
+
+MoveController --> Tank
+Tank *-- KeyAssignments
+KeyAssignments *-- "5"Command
+
+class Tank {
+    {field}...
+    + MoveDown(delta_time: float)
+    + MoveUp(delta_time: float)
+    + SpinAntiClockwise(delta_time: float)
+    + SpinClockwise(delta_time: float)
+    + Shoot(delta_time: float)
+}
+
+class MoveController {
+    +{static} Processing(tank: Tank, delta_time: float)
+}
+
+class KeyAssignments {
+  - move_up : Command
+  - move_down : Command
+  - spin_clockwise : Command
+  - spin_anti_clockwise : Command
+  - shot : Command
+
+  + KeyAssignments(move_up : Key, move_down : Key, spin_clockwise : Key,spin_anti_clockwise : Key, shot : Key)
+
+  + GetMoveDown() : Command
+  + GetMoveUp() : Command
+  + GetSpinAntiClockwise() : Command
+  + GetSpinClockwise() : Command
+  + GetShoot() : Command
+
+}
+
+class Command {
+  -key: Key
+  # Command(key: Key)
+  + Execute(tank: Tank, delta_time: float)
+  + GetKey() : Key
+}
+
+class MoveDownCommand extends Command{
+    + Execute(tank: Tank, delta_time: float)
+}
+class MoveUpCommand extends Command{
+    + Execute(tank: Tank, delta_time: float)
+}
+class SpinAntiClockwiseCommand extends Command{
+    + Execute(tank: Tank, delta_time: float)
+}
+class SpinClockwiseCommand extends Command{
+    + Execute(tank: Tank, delta_time: float)
+}
+class ShootCommand extends Command{
+    + Execute(tank: Tank, delta_time: float)
+}
+@enduml
